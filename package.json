@@ -1,6 +1,6 @@
 {
 	"name": "@gtsc/tools",
-	"version": "0.0.3-next.22",
+	"version": "0.0.4",
 	"description": "Tools packages for GTSC",
 	"repository": {
 		"type": "git",
