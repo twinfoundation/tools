@@ -18,7 +18,7 @@ export default defineConfig({
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "lcov"],
-			exclude: ["**/index.ts", "**/models/**/*.ts"]
+			exclude: ["**/index.ts", "**/models/**/*.ts", "**/tests/**/*.ts"]
 		}
 	}
 });
