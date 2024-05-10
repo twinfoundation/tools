@@ -102,7 +102,6 @@ export class CLI {
 	 * @param outputApiJson The json file to output the API to.
 	 * @param outputWorkingDir The working directory.
 	 * @returns The true if the process was successful.
-	 * @internal
 	 */
 	public async process(
 		tsToOpenApiConfig: ITsToOpenApiConfig,
@@ -800,6 +799,7 @@ export class CLI {
 	 * @param allSchemas All the known schemas.
 	 * @param requiredTypes The required types.
 	 * @param referencedSchemas The references schemas.
+	 * @internal
 	 */
 	private extractTypes(
 		allSchemas: { [id: string]: JSONSchema7 },
@@ -820,6 +820,7 @@ export class CLI {
 	 * @param allTypes All the known types.
 	 * @param schema The schema to extract from.
 	 * @param output The output types.
+	 * @internal
 	 */
 	private extractTypesFromSchema(
 		allTypes: { [id: string]: JSONSchema7 },
@@ -861,6 +862,7 @@ export class CLI {
 	/**
 	 * Tidy up the schemas for use in OpenAPI context.
 	 * @param props The properties to tidy up.
+	 * @internal
 	 */
 	private tidySchemaProperties(props: { [id: string]: JSONSchema7 | boolean }): void {
 		for (const prop in props) {
@@ -1002,6 +1004,7 @@ export class CLI {
 	 * @param args The args for the app.
 	 * @param cwd The working directory to execute the command in.
 	 * @returns Promise to wait for command execution to complete.
+	 * @internal
 	 */
 	private async runShellCmd(app: string, args: string[], cwd: string): Promise<void> {
 		return new Promise((resolve, reject) => {
