@@ -16,6 +16,16 @@
 		".eslintrc.cjs",
 		"**/wordlists/**"
 	],
-	"words": ["GTSC", "nameof", "Stiftung", "tspc", "ttsc", "ttypescript"],
-	"ignoreRegExpList": ["/from\\s+(['\"]).*\\1/", "/eslint-disable.*/"]
+	"words": [
+		"GTSC",
+		"nameof",
+		"openapi",
+		"Programatically",
+		"Stiftung",
+		"tspc",
+		"ttsc",
+		"ttypescript"
+	],
+	"ignoreRegExpList": ["/from\\s+(['\"]).*\\1/", "/eslint-disable.*/"],
+	"ignoreWords": ["Cunknown"]
 }
