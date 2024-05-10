@@ -920,8 +920,10 @@ export class CLI {
 			}
 		}
 
-		console.log("Loading Modules:", packages.join(" "));
-		await this.runShellCmd("npm", ["install", ...packages], outputWorkingDir);
+		if (packages.length > 0) {
+			console.log("Installing NPM Packages:", packages.join(" "));
+			await this.runShellCmd("npm", ["install", ...packages], outputWorkingDir);
+		}
 
 		console.log();
 		for (const configRestRoutes of tsToOpenApiConfig.restRoutes) {
