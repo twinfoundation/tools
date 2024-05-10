@@ -921,7 +921,7 @@ export class CLI {
 		}
 
 		if (packages.length > 0) {
-			console.log("Loading Modules:", packages.join(" "));
+			console.log("Installing NPM Packages:", packages.join(" "));
 			await this.runShellCmd("npm", ["install", ...packages], outputWorkingDir);
 		}
 
