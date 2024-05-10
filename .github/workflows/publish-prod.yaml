@@ -10,6 +10,7 @@ on:
         options:
           - nameof
           - nameof-transformer
+          - ts-to-openapi
 
 jobs:
   publish:
