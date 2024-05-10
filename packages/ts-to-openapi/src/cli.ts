@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 
-import { spawn } from "node:child_process";
+import { exec, spawn } from "node:child_process";
 import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type {
@@ -914,8 +914,10 @@ export class CLI {
 
 		const packages: string[] = [];
 		for (const configRestRoutes of tsToOpenApiConfig.restRoutes) {
-			const version = configRestRoutes.version ?? "latest";
-			packages.push(`${configRestRoutes.package}@${version}`);
+			if (Is.stringValue(configRestRoutes.package)) {
+				const version = configRestRoutes.version ?? "latest";
+				packages.push(`${configRestRoutes.package}@${version}`);
+			}
 		}
 
 		console.log("Loading Modules:", packages.join(" "));
@@ -923,70 +925,44 @@ export class CLI {
 
 		console.log();
 		for (const configRestRoutes of tsToOpenApiConfig.restRoutes) {
-			console.log("Reading Package JSON:", configRestRoutes.package);
-			const pkgJsonContent = await readFile(
-				path.join(outputWorkingDir, "node_modules", configRestRoutes.package, "package.json"),
-				"utf8"
-			);
+			const typeFolders = ["models", "errors"];
+			const packageName = configRestRoutes.package;
+			const packageRoot = configRestRoutes.packageRoot;
+			if (!Is.stringValue(packageName) && !Is.stringValue(packageRoot)) {
+				// eslint-disable-next-line no-restricted-syntax
+				throw new Error("Package name or root must be specified");
+			}
+			const rootFolder = Is.stringValue(packageName)
+				? path.join(outputWorkingDir, "node_modules", packageName)
+				: path.resolve(packageRoot ?? "");
+			const npmResolveFolder = Is.stringValue(packageName) ? outputWorkingDir : rootFolder;
+
+			const pkgJsonContent = await readFile(path.join(rootFolder, "package.json"), "utf8");
 			const pkgJson: IPackageJson = JSON.parse(pkgJsonContent);
+			console.log("Processing Package:", pkgJson.name);
 
-			const modelsDir = path.join(
-				outputWorkingDir,
-				"node_modules",
-				configRestRoutes.package,
-				"dist",
-				"types",
-				"models"
-			);
-			if (await this.dirExists(modelsDir)) {
-				typeRoots.push(path.join(modelsDir, "**/*.ts"));
+			for (const typeFolder of typeFolders) {
+				const typesDir = path.join(rootFolder, "dist", "types", typeFolder);
+				if (await this.dirExists(typesDir)) {
+					typeRoots.push(path.join(typesDir, "**/*.ts"));
+				}
 			}
-			const errorDir = path.join(
-				outputWorkingDir,
-				"node_modules",
-				configRestRoutes.package,
-				"dist",
-				"types",
-				"errors"
-			);
-			if (await this.dirExists(errorDir)) {
-				typeRoots.push(path.join(errorDir, "**/*.ts"));
-			}
-
 			if (pkgJson.dependencies) {
+				const nodeModulesFolder = await this.npmRoot(npmResolveFolder);
 				for (const dep in pkgJson.dependencies) {
 					if (dep.startsWith("@gtsc")) {
-						const modelsDirDep = path.join(
-							outputWorkingDir,
-							"node_modules",
-							dep,
-							"dist",
-							"types",
-							"models"
-						);
-						if (await this.dirExists(modelsDirDep)) {
-							typeRoots.push(path.join(modelsDirDep, "**/*.ts"));
-						}
-
-						const errorDirDep = path.join(
-							outputWorkingDir,
-							"node_modules",
-							dep,
-							"dist",
-							"types",
-							"errors"
-						);
-						if (await this.dirExists(errorDirDep)) {
-							typeRoots.push(path.join(errorDirDep, "**/*.ts"));
+						for (const typeFolder of typeFolders) {
+							const typesDirDep = path.join(nodeModulesFolder, dep, "dist", "types", typeFolder);
+							if (await this.dirExists(typesDirDep)) {
+								typeRoots.push(path.join(typesDirDep, "**/*.ts"));
+							}
 						}
 					}
 				}
 			}
 
-			console.log("Importing Module:", configRestRoutes.package);
-			const pkg = await import(
-				`file://${path.join(outputWorkingDir, "node_modules", configRestRoutes.package, "dist/esm/index.mjs")}`
-			);
+			console.log("Importing Module:", pkgJson.name);
+			const pkg = await import(`file://${path.join(rootFolder, "dist/esm/index.mjs")}`);
 			const generateMethod = configRestRoutes.routesMethod ?? "generateRestRoutes";
 			const tagsProperty = configRestRoutes.tagProperty ?? "tags";
 			restRoutes.push({
@@ -1040,5 +1016,22 @@ export class CLI {
 		} catch {
 			return false;
 		}
+	}
+
+	/**
+	 * Find the NPM root based on a package.json path.
+	 * @param rootFolder The path to the package.json.
+	 * @returns The root path.
+	 * @internal
+	 */
+	private async npmRoot(rootFolder: string): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			exec("npm root", { cwd: rootFolder }, (error, stdout, stderr) => {
+				if (error) {
+					reject(error);
+				}
+				resolve(stdout.trim());
+			});
+		});
 	}
 }
