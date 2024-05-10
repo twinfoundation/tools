@@ -47,12 +47,17 @@ export interface ITsToOpenApiConfig {
 		/**
 		 * The package containing the routes.
 		 */
-		package: string;
+		package?: string;
 
 		/**
 		 * The version of the package to use, defaults to latest.
 		 */
 		version?: string;
+
+		/**
+		 * To point to a local instance of a package use this property instead of package/version.
+		 */
+		packageRoot?: string;
 
 		/**
 		 * The name of the routes method in the package, defaults to generateRoutes.
