@@ -1,4 +1,4 @@
-# GTSC / Nameof TypeScript Transformer
+# GTSC Nameof TypeScript Transformer
 
 This transformer is used to convert class/type/property names to embedded strings, so that they are available to the code at runtime.
 

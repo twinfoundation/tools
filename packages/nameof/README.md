@@ -1,4 +1,4 @@
-# GTSC / Nameof
+# GTSC Nameof
 
 The methods in this package are used to convert TypeScript class/type/property names to embedded strings, so that they are available to your JavaScript code at runtime.
 

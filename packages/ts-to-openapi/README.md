@@ -1,4 +1,4 @@
-# GTSC / TypeScript to OpenApi
+# GTSC TypeScript to OpenApi
 
 This tool is used to read the REST route definitions from `@gtsc` packages and convert them into an OpenAPI specification in JSON format.
 
