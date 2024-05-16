@@ -1,4 +1,4 @@
-# GTSC / Tools
+# GTSC Tools
 
 This mono-repository contains some of the tooling packages that the rest of the GTSC packages depend on.
 
