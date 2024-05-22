@@ -20,7 +20,7 @@ Configuration of the package is shown in [configuration.md](configuration.md)
 
 ## Reference
 
-Detailed reference documentation for the API can be found in [reference/modules.md](reference/modules.md)
+Detailed reference documentation for the API can be found in [reference/globals.md](reference/globals.md)
 
 ## Changelog
 
