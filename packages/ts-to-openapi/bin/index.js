@@ -3,11 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 process.title = 'TypeScript to OpenAPI';
 
-import('../dist/esm/index.mjs')
-	.then(m => {
-		const cli = new m.CLI();
-		return cli.run(process.argv);
-	})
-	.catch(err => {
-		console.error(err);
-	});
+import { CLI } from '../dist/esm/index.mjs';
+
+const cli = new CLI();
+const result = await cli.run(process.argv);
+process.exit(result);
