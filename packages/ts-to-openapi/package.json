@@ -30,7 +30,7 @@
 	"dependencies": {
 		"@gtsc/api-models": "next",
 		"@gtsc/core": "next",
-		"@gtsc/nameof": "next",
+		"@gtsc/nameof": "0.0.4-next.7",
 		"@gtsc/web": "next",
 		"glob": "^10.3.15",
 		"jsonschema": "^1.4.1",
