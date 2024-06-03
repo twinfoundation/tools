@@ -10,6 +10,7 @@ on:
         options:
           - nameof
           - nameof-transformer
+          - merge-locales
           - ts-to-openapi
 
 jobs:

@@ -1,11 +1,11 @@
 {
-	"name": "@gtsc/ts-to-openapi",
+	"name": "@gtsc/merge-locales",
 	"version": "0.0.4-next.7",
-	"description": "Tool to convert TypeScript REST route definitions to OpenAPI Specifications",
+	"description": "Tool to merge locale files from all dependencies",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/gtscio/tools.git",
-		"directory": "packages/ts-to-openapi"
+		"url": "git+https://github.com/gtscio/tools.git",
+		"directory": "packages/merge-locales"
 	},
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
@@ -28,13 +28,9 @@
 		"dist": "npm run clean && npm run build && npm run test && npm run bundle && npm run docs"
 	},
 	"dependencies": {
-		"@gtsc/api-models": "next",
 		"@gtsc/core": "next",
 		"@gtsc/nameof": "0.0.4-next.7",
-		"@gtsc/web": "next",
-		"glob": "^10.3.15",
-		"jsonschema": "^1.4.1",
-		"ts-json-schema-generator": "^2.1.1"
+		"glob": "^10.3.15"
 	},
 	"devDependencies": {
 		"@gtsc/nameof-transformer": "0.0.4-next.7",
@@ -71,5 +67,13 @@
 	],
 	"bin": {
 		"ts-to-openapi": "bin/index.js"
-	}
+	},
+	"directories": {
+		"doc": "docs",
+		"test": "tests"
+	},
+	"bugs": {
+		"url": "https://github.com/gtscio/tools/issues"
+	},
+	"homepage": "https://github.com/gtscio/tools#readme"
 }
