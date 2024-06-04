@@ -1,12 +1,12 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 
-import { exec } from "node:child_process";
-import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { BaseError, Is, type ILocale, type ILocaleDictionary } from "@gtsc/core";
+import { BaseError, Is, ObjectHelper, type ILocale, type ILocaleDictionary } from "@gtsc/core";
 import type { IMergeLocalesConfig } from "./models/IMergeLocalesConfig";
 import type { IPackageJson } from "./models/IPackageJson";
+import { dirExists, findNpmRoot } from "./utils";
 
 /**
  * The main entry point for the CLI.
@@ -76,7 +76,7 @@ export class CLI {
 			} catch {}
 			await mkdir(outputDirectory, { recursive: true });
 
-			const npmRoot = await this.npmRoot(workingDirectory);
+			const npmRoot = await findNpmRoot(workingDirectory);
 			console.log("NPM Root:", npmRoot);
 
 			let packageNames: string[] = [];
@@ -158,10 +158,10 @@ export class CLI {
 	): Promise<void> {
 		console.log("Merging Locales for:", packageName);
 
-		if (await this.dirExists(packageLocalDirectory)) {
+		if (await dirExists(packageLocalDirectory)) {
 			for (const locale of locales) {
 				const localeFile = path.join(packageLocalDirectory, `${locale.code}.json`);
-				if (await this.dirExists(localeFile)) {
+				if (await dirExists(localeFile)) {
 					console.log("\tMerging Locale:", locale.code);
 
 					const localeContent = await readFile(localeFile, "utf8");
@@ -169,10 +169,10 @@ export class CLI {
 					if (!localeDictionaries[locale.code]) {
 						localeDictionaries[locale.code] = {};
 					}
-					localeDictionaries[locale.code] = {
-						...localeDictionaries[locale.code],
-						...localeDictionary
-					};
+					localeDictionaries[locale.code] = ObjectHelper.merge(
+						localeDictionaries[locale.code],
+						localeDictionary
+					);
 				}
 			}
 		}
@@ -205,37 +205,5 @@ export class CLI {
 		}
 
 		return packageJson;
-	}
-
-	/**
-	 * Find the NPM root based on a package.json path.
-	 * @param rootFolder The path to the package.json.
-	 * @returns The root path.
-	 * @internal
-	 */
-	private async npmRoot(rootFolder: string): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
-			exec("npm root", { cwd: rootFolder }, (error, stdout, stderr) => {
-				if (error) {
-					reject(error);
-				}
-				resolve(stdout.trim());
-			});
-		});
-	}
-
-	/**
-	 * Check if the dir exists.
-	 * @param dir The directory to check.
-	 * @returns True if the dir exists.
-	 * @internal
-	 */
-	private async dirExists(dir: string): Promise<boolean> {
-		try {
-			await access(dir);
-			return true;
-		} catch {
-			return false;
-		}
 	}
 }

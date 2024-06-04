@@ -1,8 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-
-import { exec, spawn } from "node:child_process";
-import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type {
 	ICreatedResponse,
@@ -14,7 +12,7 @@ import type {
 	ITag,
 	IUnauthorizedResponse
 } from "@gtsc/api-models";
-import { Coerce, Is, StringHelper } from "@gtsc/core";
+import { Is, StringHelper } from "@gtsc/core";
 import { nameof } from "@gtsc/nameof";
 import { HttpStatusCodes } from "@gtsc/web";
 import type { JSONSchema7 } from "json-schema";
@@ -33,6 +31,7 @@ import type { IOpenApiResponse } from "./models/IOpenApiResponse";
 import type { IOpenApiSecurityScheme } from "./models/IOpenApiSecurityScheme";
 import type { IPackageJson } from "./models/IPackageJson";
 import type { ITsToOpenApiConfig } from "./models/ITsToOpenApiConfig";
+import { dirExists, findNpmRoot, runShellCmd } from "./utils";
 
 /**
  * The main entry point for the CLI.
@@ -922,7 +921,7 @@ export class CLI {
 
 		if (packages.length > 0) {
 			console.log("Installing NPM Packages:", packages.join(" "));
-			await this.runShellCmd("npm", ["install", ...packages], outputWorkingDir);
+			await runShellCmd("npm", ["install", ...packages], outputWorkingDir);
 		}
 
 		console.log();
@@ -945,17 +944,17 @@ export class CLI {
 
 			for (const typeFolder of typeFolders) {
 				const typesDir = path.join(rootFolder, "dist", "types", typeFolder);
-				if (await this.dirExists(typesDir)) {
+				if (await dirExists(typesDir)) {
 					typeRoots.push(path.join(typesDir, "**/*.ts"));
 				}
 			}
 			if (pkgJson.dependencies) {
-				const nodeModulesFolder = await this.npmRoot(npmResolveFolder);
+				const nodeModulesFolder = await findNpmRoot(npmResolveFolder);
 				for (const dep in pkgJson.dependencies) {
 					if (dep.startsWith("@gtsc")) {
 						for (const typeFolder of typeFolders) {
 							const typesDirDep = path.join(nodeModulesFolder, dep, "dist", "types", typeFolder);
-							if (await this.dirExists(typesDirDep)) {
+							if (await dirExists(typesDirDep)) {
 								typeRoots.push(path.join(typesDirDep, "**/*.ts"));
 							}
 						}
@@ -974,66 +973,5 @@ export class CLI {
 		}
 
 		return restRoutes;
-	}
-
-	/**
-	 * Run a shell app.
-	 * @param app The app to run in the shell.
-	 * @param args The args for the app.
-	 * @param cwd The working directory to execute the command in.
-	 * @returns Promise to wait for command execution to complete.
-	 * @internal
-	 */
-	private async runShellCmd(app: string, args: string[], cwd: string): Promise<void> {
-		return new Promise((resolve, reject) => {
-			const osCommand = process.platform.startsWith("win") ? `${app}.cmd` : app;
-
-			const sp = spawn(osCommand, args, {
-				stdio: "inherit",
-				shell: true,
-				cwd
-			});
-
-			sp.on("exit", (exitCode, signals) => {
-				if (Coerce.number(exitCode) !== 0 || signals?.length) {
-					// eslint-disable-next-line no-restricted-syntax
-					reject(new Error("Run failed"));
-				} else {
-					resolve();
-				}
-			});
-		});
-	}
-
-	/**
-	 * Check if the dir exists.
-	 * @param dir The directory to check.
-	 * @returns True if the dir exists.
-	 * @internal
-	 */
-	private async dirExists(dir: string): Promise<boolean> {
-		try {
-			await access(dir);
-			return true;
-		} catch {
-			return false;
-		}
-	}
-
-	/**
-	 * Find the NPM root based on a package.json path.
-	 * @param rootFolder The path to the package.json.
-	 * @returns The root path.
-	 * @internal
-	 */
-	private async npmRoot(rootFolder: string): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
-			exec("npm root", { cwd: rootFolder }, (error, stdout, stderr) => {
-				if (error) {
-					reject(error);
-				}
-				resolve(stdout.trim());
-			});
-		});
 	}
 }
