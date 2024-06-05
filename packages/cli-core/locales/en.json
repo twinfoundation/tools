@@ -3,7 +3,7 @@
 		"progress": {
 			"done": "Done.",
 			"error": "Error",
-			"loadingEnvFile": "Loading env files"
+			"loadingEnvFiles": "Loading env files"
 		},
 		"options": {
 			"lang": {
@@ -11,7 +11,7 @@
 				"description": "The language to display the output in."
 			},
 			"load-env": {
-				"param": "--load-env [env]",
+				"param": "--load-env [env...]",
 				"description": "Load the env files to initialise any environment variables."
 			}
 		}
