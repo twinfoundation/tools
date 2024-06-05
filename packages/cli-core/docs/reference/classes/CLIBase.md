@@ -42,13 +42,13 @@ The exit code.
 
 > `protected` **rootAction**(`program`, `opts`): `Promise`\<`void`\>
 
-Root action.
+Root action which can be overridden in derived classes, defaults to showing help.
 
 #### Parameters
 
 • **program**: `Command`
 
-The main program to handling the command.
+The main program to handling the commands.
 
 • **opts**: `unknown`
 
@@ -64,7 +64,7 @@ The root options.
 
 > `protected` **getCommands**(`program`): `Command`[]
 
-Get the commands for the CLI.
+Get the commands for the CLI, override in derived class to supply your own.
 
 #### Parameters
 

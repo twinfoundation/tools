@@ -98,8 +98,8 @@ export abstract class CLIBase {
 	}
 
 	/**
-	 * Root action which can be overridden in derived classes, default to showing help.
-	 * @param program The main program to handling the command.
+	 * Root action which can be overridden in derived classes, defaults to showing help.
+	 * @param program The main program to handling the commands.
 	 * @param opts The root options.
 	 */
 	protected async rootAction(program: Command, opts: unknown): Promise<void> {
