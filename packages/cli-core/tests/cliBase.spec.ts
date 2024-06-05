@@ -36,6 +36,7 @@ describe("CLI", () => {
 				version: "0.0.1",
 				icon: "🔐"
 			},
+			path.dirname(import.meta.filename),
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -65,6 +66,7 @@ describe("CLI", () => {
 				icon: "🔐",
 				supportsLang: false
 			},
+			path.dirname(import.meta.filename),
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -91,6 +93,7 @@ describe("CLI", () => {
 				icon: "🔐",
 				supportsEnvFiles: true
 			},
+			path.dirname(import.meta.filename),
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -122,6 +125,7 @@ describe("CLI", () => {
 				version: "0.0.1",
 				icon: "🔐"
 			},
+			path.dirname(import.meta.filename),
 			["", path.join(__dirname, "test-app"), "--version"]
 		);
 		expect(exitCode).toBe(0);

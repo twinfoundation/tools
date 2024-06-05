@@ -1,6 +1,5 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import path from "node:path";
 import { Command } from "commander";
 import { CLIDisplay } from "./cliDisplay";
 import {
@@ -18,11 +17,12 @@ export abstract class CLIBase {
 	/**
 	 * Execute the command line processing.
 	 * @param options The options for the CLI.
+	 * @param appRootPath The root path of the application.
 	 * @param argv The process arguments.
 	 * @returns The exit code.
 	 */
-	public async execute(options: ICliOptions, argv: string[]): Promise<number> {
-		initGlobalOptions(path.dirname(argv[1]));
+	public async execute(options: ICliOptions, appRootPath: string, argv: string[]): Promise<number> {
+		initGlobalOptions(appRootPath);
 		initLocales("en");
 
 		return new Promise<number>(resolve => {
@@ -78,9 +78,14 @@ export abstract class CLIBase {
 				program.parseOptions(argv);
 				handleGlobalOptions(program);
 
-				const commandCount = this.buildCommands(program);
-				if (commandCount === 0) {
-					program.usage(" ");
+				try {
+					const commandCount = this.buildCommands(program);
+					if (commandCount === 0) {
+						program.usage(" ");
+					}
+				} catch (err) {
+					CLIDisplay.error(err);
+					resolve(1);
 				}
 
 				program.parse(argv);

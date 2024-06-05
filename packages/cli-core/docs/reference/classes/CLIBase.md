@@ -16,7 +16,7 @@ The main entry point for the CLI.
 
 ### execute()
 
-> **execute**(`options`, `argv`): `Promise`\<`number`\>
+> **execute**(`options`, `appRootPath`, `argv`): `Promise`\<`number`\>
 
 Execute the command line processing.
 
@@ -25,6 +25,10 @@ Execute the command line processing.
 • **options**: [`ICliOptions`](../interfaces/ICliOptions.md)
 
 The options for the CLI.
+
+• **appRootPath**: `string`
+
+The root path of the application.
 
 • **argv**: `string`[]
 
