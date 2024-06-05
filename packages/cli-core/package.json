@@ -1,6 +1,6 @@
 {
 	"name": "@gtsc/cli-core",
-	"version": "0.0.4-next.14",
+	"version": "0.0.4-next.15",
 	"description": "Core classes for building a CLI",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 		"dist": "npm run clean && npm run build && npm run merge-locales && npm run test && npm run bundle && npm run docs"
 	},
 	"dependencies": {
-		"@gtsc/nameof": "0.0.4-next.14",
+		"@gtsc/nameof": "0.0.4-next.15",
 		"chalk": "^5.3.0",
 		"commander": "^12.1.0",
 		"dotenv": "^16.4.5"
@@ -38,7 +38,7 @@
 		"@gtsc/core": "*"
 	},
 	"devDependencies": {
-		"@gtsc/nameof-transformer": "0.0.4-next.14",
+		"@gtsc/nameof-transformer": "0.0.4-next.15",
 		"@types/node": "^20.12.12",
 		"@vitest/coverage-v8": "^1.6.0",
 		"copyfiles": "^2.4.1",
