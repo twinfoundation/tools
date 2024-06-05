@@ -98,19 +98,18 @@ export abstract class CLIBase {
 	}
 
 	/**
-	 * Root action.
+	 * Root action which can be overridden in derived classes, default to showing help.
 	 * @param program The main program to handling the command.
 	 * @param opts The root options.
-	 * @internal
 	 */
 	protected async rootAction(program: Command, opts: unknown): Promise<void> {
 		program.help();
 	}
 
 	/**
-	 * Get the commands for the CLI.
+	 * Get the commands for the CLI, override in derived class to supply your own.
 	 * @param program The main program that the commands will be added to.
-	 * @internal
+	 * @returns The commands for the CLI.
 	 */
 	protected getCommands(program: Command): Command[] {
 		return [];
