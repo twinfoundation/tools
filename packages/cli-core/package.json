@@ -16,7 +16,7 @@
 	"scripts": {
 		"clean": "rimraf dist coverage",
 		"build": "tspc",
-		"merge-locales": "merge-locales",
+		"merge-locales": "copyfiles locales/*.json dist",
 		"test": "vitest --run --config ./vitest.config.ts",
 		"coverage": "vitest --run --coverage --config ./vitest.config.ts",
 		"bundle:esm": "rollup --config rollup.config.mjs --environment MODULE:esm",
@@ -36,7 +36,6 @@
 		"dotenv": "^16.4.5"
 	},
 	"devDependencies": {
-		"@gtsc/merge-locales": "next",
 		"@gtsc/nameof-transformer": "0.0.4-next.10",
 		"@types/node": "^20.12.12",
 		"@vitest/coverage-v8": "^1.6.0",
