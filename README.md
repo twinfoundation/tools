@@ -6,6 +6,7 @@ This mono-repository contains some of the tooling packages that the rest of the 
 
 - [nameof-transformer](packages/nameof-transformer/README.md) - A TypeScript transformer which converts types and properties to their actual name for use at runtime.
 - [nameof](packages/nameof/README.md) - Provides the definitions for the methods which are processed by the `nameof-transformer`.
+- [cli-core](packages/cli-core/README.md) - Provides core classes and methods to be used when building a CLI.
 - [merge-locales](packages/merge-locales/README.md) - Tool to merge locales from the dependencies of a package.
 - [ts-to-openapi](packages/ts-to-openapi/README.md) - Tool to convert TypeScript REST route definitions to OpenAPI Specifications.
 
