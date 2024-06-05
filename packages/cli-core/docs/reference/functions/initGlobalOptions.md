@@ -1,14 +1,14 @@
 # Function: initGlobalOptions()
 
-> **initGlobalOptions**(`appRootPath`): `void`
+> **initGlobalOptions**(`localesDirectory`): `void`
 
 Initialize the global options.
 
 ## Parameters
 
-• **appRootPath**: `string`
+• **localesDirectory**: `string`
 
-The root path of the application.
+The path to load the locales from.
 
 ## Returns
 

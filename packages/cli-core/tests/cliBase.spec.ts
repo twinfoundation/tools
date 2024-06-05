@@ -10,6 +10,7 @@ import { CLIDisplay } from "../src/cliDisplay";
  */
 class CLI extends CLIBase {}
 
+const localesDir = path.resolve("./dist/locales");
 let writeBuffer: string[] = [];
 let errorBuffer: string[] = [];
 
@@ -36,7 +37,7 @@ describe("CLI", () => {
 				version: "0.0.1",
 				icon: "🔐"
 			},
-			path.dirname(import.meta.filename),
+			localesDir,
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -66,7 +67,7 @@ describe("CLI", () => {
 				icon: "🔐",
 				supportsLang: false
 			},
-			path.dirname(import.meta.filename),
+			localesDir,
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -93,7 +94,7 @@ describe("CLI", () => {
 				icon: "🔐",
 				supportsEnvFiles: true
 			},
-			path.dirname(import.meta.filename),
+			localesDir,
 			["", path.join(__dirname, "test-app")]
 		);
 		expect(exitCode).toBe(0);
@@ -125,7 +126,7 @@ describe("CLI", () => {
 				version: "0.0.1",
 				icon: "🔐"
 			},
-			path.dirname(import.meta.filename),
+			localesDir,
 			["", path.join(__dirname, "test-app"), "--version"]
 		);
 		expect(exitCode).toBe(0);

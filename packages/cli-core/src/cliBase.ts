@@ -1,5 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { Coerce } from "@gtsc/core";
 import { Command } from "commander";
 import { CLIDisplay } from "./cliDisplay";
 import {
@@ -17,12 +18,16 @@ export abstract class CLIBase {
 	/**
 	 * Execute the command line processing.
 	 * @param options The options for the CLI.
-	 * @param appRootPath The root path of the application.
+	 * @param localesDirectory The path to load the locales from.
 	 * @param argv The process arguments.
 	 * @returns The exit code.
 	 */
-	public async execute(options: ICliOptions, appRootPath: string, argv: string[]): Promise<number> {
-		initGlobalOptions(appRootPath);
+	public async execute(
+		options: ICliOptions,
+		localesDirectory: string,
+		argv: string[]
+	): Promise<number> {
+		initGlobalOptions(localesDirectory);
 		initLocales("en");
 
 		return new Promise<number>(resolve => {
@@ -70,30 +75,50 @@ export abstract class CLIBase {
 						}
 					});
 
-				addGlobalOptions(program, options.supportsLang ?? true, options.supportsEnvFiles ?? false);
-
-				// We parse the options before building the command
-				// in case the language has been set, then the
-				// help for the options will be in the correct language.
-				program.parseOptions(argv);
-				handleGlobalOptions(program);
-
 				try {
+					addGlobalOptions(
+						program,
+						options.supportsLang ?? true,
+						options.supportsEnvFiles ?? false
+					);
+
+					// We parse the options before building the command
+					// in case the language has been set, then the
+					// help for the options will be in the correct language.
+					program.parseOptions(argv);
+					handleGlobalOptions(program);
+
 					const commandCount = this.buildCommands(program);
 					if (commandCount === 0) {
 						program.usage(" ");
 					}
+
+					program.parse(argv);
 				} catch (err) {
-					CLIDisplay.error(err);
-					resolve(1);
+					let exitCode;
+					if (err instanceof Error) {
+						// This error could be the exit code we errored with
+						// from the exitOverride so parse and resolve with it
+						exitCode = Coerce.number(err.message);
+					}
+
+					if (exitCode === 0) {
+						resolve(0);
+					} else {
+						CLIDisplay.error(err);
+						resolve(1);
+					}
+				}
+			} catch (error) {
+				let exitCode;
+				if (error instanceof Error) {
+					// This error could be the exit code we errored with
+					// from the exitOverride so parse and resolve with it
+					exitCode = Coerce.number(error.message);
 				}
 
-				program.parse(argv);
-			} catch (error) {
-				if (error instanceof Error) {
-					// This error is the the exit code we errored with
-					// from the exitOverride so parse and resolve with it
-					resolve(Number.parseInt(error.message, 10));
+				if (exitCode === 0) {
+					resolve(0);
 				} else {
 					CLIDisplay.error(error);
 					resolve(1);
