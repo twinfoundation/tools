@@ -7,14 +7,14 @@ import * as dotenv from "dotenv";
 import { CLIDisplay } from "../cliDisplay";
 import { CLIUtils } from "../cliUtils";
 
-let applicationRootPath: string;
+let localesDir: string;
 
 /**
  * Initialize the global options.
- * @param appRootPath The root path of the application.
+ * @param localesDirectory The path to load the locales from.
  */
-export function initGlobalOptions(appRootPath: string): void {
-	applicationRootPath = appRootPath;
+export function initGlobalOptions(localesDirectory: string): void {
+	localesDir = localesDirectory;
 }
 
 /**
@@ -71,7 +71,7 @@ export function handleGlobalOptions(command: Command): void {
  * @internal
  */
 export function initLocales(locale: string): void {
-	const localePath = path.join(applicationRootPath, `../dist/locales/${locale}.json`);
+	const localePath = path.join(localesDir, `${locale}.json`);
 	const localeContent = CLIUtils.readJsonFileSync<ILocaleDictionary>(localePath);
 	if (Is.objectValue(localeContent)) {
 		I18n.addDictionary(locale, localeContent);

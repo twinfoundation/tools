@@ -16,7 +16,7 @@ The main entry point for the CLI.
 
 ### execute()
 
-> **execute**(`options`, `appRootPath`, `argv`): `Promise`\<`number`\>
+> **execute**(`options`, `localesDirectory`, `argv`): `Promise`\<`number`\>
 
 Execute the command line processing.
 
@@ -26,9 +26,9 @@ Execute the command line processing.
 
 The options for the CLI.
 
-• **appRootPath**: `string`
+• **localesDirectory**: `string`
 
-The root path of the application.
+The path to load the locales from.
 
 • **argv**: `string`[]
 
