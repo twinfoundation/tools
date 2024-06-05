@@ -36,7 +36,7 @@
 		"dotenv": "^16.4.5"
 	},
 	"devDependencies": {
-		"@gtsc/merge-locales": "0.0.4-next.10",
+		"@gtsc/merge-locales": "next",
 		"@gtsc/nameof-transformer": "0.0.4-next.10",
 		"@types/node": "^20.12.12",
 		"@vitest/coverage-v8": "^1.6.0",
