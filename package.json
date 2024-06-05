@@ -42,8 +42,8 @@
 		"packages/nameof-transformer",
 		"packages/nameof",
 		"packages/cli-core",
-		"packages/ts-to-openapi",
-		"packages/merge-locales"
+		"packages/merge-locales",
+		"packages/ts-to-openapi"
 	],
 	"type": "module"
 }
