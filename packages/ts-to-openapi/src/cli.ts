@@ -16,7 +16,7 @@ import { Is, StringHelper } from "@gtsc/core";
 import { nameof } from "@gtsc/nameof";
 import { HttpStatusCodes } from "@gtsc/web";
 import type { JSONSchema7 } from "json-schema";
-import { createGenerator } from "./customSchemeGenerator";
+import { createGenerator } from "ts-json-schema-generator";
 import {
 	HTTP_STATUS_CODE_MAP,
 	getHttpExampleFromType,
