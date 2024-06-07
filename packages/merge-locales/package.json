@@ -1,6 +1,6 @@
 {
 	"name": "@gtsc/merge-locales",
-	"version": "0.0.4-next.16",
+	"version": "0.0.4-next.17",
 	"description": "Tool to merge locale files from all dependencies",
 	"repository": {
 		"type": "git",
@@ -16,6 +16,7 @@
 	"scripts": {
 		"clean": "rimraf dist coverage",
 		"build": "tspc",
+		"merge-locales": "copyfiles locales/en.json dist && npm run bundle:esm && node bin/index.js",
 		"test": "vitest --run --config ./vitest.config.ts",
 		"coverage": "vitest --run --coverage --config ./vitest.config.ts",
 		"bundle:esm": "rollup --config rollup.config.mjs --environment MODULE:esm",
@@ -25,15 +26,17 @@
 		"docs:generate": "typedoc",
 		"docs:remove-header": "replace-in-files --regex='^.*overview.md.*?\\s\\s.*?\\s\\s' --string='docs/' --replacement='' docs/**/*.md",
 		"docs": "npm run docs:clean && npm run docs:generate && npm run docs:remove-header",
-		"dist": "npm run clean && npm run build && npm run test && npm run bundle && npm run docs"
+		"dist": "npm run clean && npm run build && npm run merge-locales && npm run test && npm run bundle && npm run docs"
 	},
 	"dependencies": {
+		"@gtsc/cli-core": "next",
 		"@gtsc/core": "next",
-		"@gtsc/nameof": "0.0.4-next.16",
+		"@gtsc/nameof": "0.0.4-next.17",
+		"commander": "^12.1.0",
 		"glob": "^10.3.15"
 	},
 	"devDependencies": {
-		"@gtsc/nameof-transformer": "0.0.4-next.16",
+		"@gtsc/nameof-transformer": "0.0.4-next.17",
 		"@types/node": "^20.12.12",
 		"@vitest/coverage-v8": "^1.6.0",
 		"copyfiles": "^2.4.1",

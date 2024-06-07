@@ -8,7 +8,7 @@ export interface IPackageJson {
 	/**
 	 * The name of the package.
 	 */
-	name: string;
+	name?: string;
 
 	/**
 	 * The dependencies for the package.
