@@ -2,6 +2,10 @@
 
 The main entry point for the CLI.
 
+## Extends
+
+- `CLIBase`
+
 ## Constructors
 
 ### new CLI()
@@ -12,15 +16,27 @@ The main entry point for the CLI.
 
 [`CLI`](CLI.md)
 
+#### Inherited from
+
+`CLIBase.constructor`
+
 ## Methods
 
-### run()
+### execute()
 
-> **run**(`argv`): `Promise`\<`number`\>
+> **execute**(`options`, `localesDirectory`, `argv`): `Promise`\<`number`\>
 
-Run the app.
+Execute the command line processing.
 
 #### Parameters
+
+• **options**: `ICliOptions`
+
+The options for the CLI.
+
+• **localesDirectory**: `string`
+
+The path to load the locales from.
 
 • **argv**: `string`[]
 
@@ -32,30 +48,76 @@ The process arguments.
 
 The exit code.
 
+#### Inherited from
+
+`CLIBase.execute`
+
 ***
 
-### process()
+### getCommands()
 
-> **process**(`tsToOpenApiConfig`, `outputApiJson`, `outputWorkingDir`): `Promise`\<`boolean`\>
+> `protected` **getCommands**(`program`): `Command`[]
 
-Process the configuration.
+Get the commands for the CLI, override in derived class to supply your own.
 
 #### Parameters
 
-• **tsToOpenApiConfig**: [`ITsToOpenApiConfig`](../interfaces/ITsToOpenApiConfig.md)
+• **program**: `Command`
 
-The API Configuration
-
-• **outputApiJson**: `string`
-
-The json file to output the API to.
-
-• **outputWorkingDir**: `string`
-
-The working directory.
+The main program that the commands will be added to.
 
 #### Returns
 
-`Promise`\<`boolean`\>
+`Command`[]
 
-The true if the process was successful.
+The commands for the CLI.
+
+#### Inherited from
+
+`CLIBase.getCommands`
+
+***
+
+### run()
+
+> **run**(`argv`, `localesDirectory`?): `Promise`\<`number`\>
+
+Run the app.
+
+#### Parameters
+
+• **argv**: `string`[]
+
+The process arguments.
+
+• **localesDirectory?**: `string`
+
+The directory for the locales, default to relative to the script.
+
+#### Returns
+
+`Promise`\<`number`\>
+
+The exit code.
+
+***
+
+### configureRoot()
+
+> `protected` **configureRoot**(`program`): `void`
+
+Configure any options or actions at the root program level.
+
+#### Parameters
+
+• **program**: `Command`
+
+The root program command.
+
+#### Returns
+
+`void`
+
+#### Overrides
+
+`CLIBase.configureRoot`

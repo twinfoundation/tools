@@ -7,3 +7,9 @@
 ## Interfaces
 
 - [IMergeLocalesConfig](interfaces/IMergeLocalesConfig.md)
+
+## Functions
+
+- [buildCommandMergeLocales](functions/buildCommandMergeLocales.md)
+- [actionCommandMergeLocales](functions/actionCommandMergeLocales.md)
+- [mergeLocales](functions/mergeLocales.md)
