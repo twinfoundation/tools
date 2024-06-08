@@ -37,38 +37,30 @@ export function buildCommandMergeLocales(program: Command): void {
  * @param opts.config The optional configuration file.
  */
 export async function actionCommandMergeLocales(opts: { config?: string }): Promise<void> {
-	try {
-		let config: IMergeLocalesConfig | undefined;
-		if (Is.stringValue(opts.config)) {
+	let config: IMergeLocalesConfig | undefined;
+	if (Is.stringValue(opts.config)) {
+		try {
 			const configJson = path.resolve(opts.config);
+			CLIDisplay.value(I18n.formatMessage("commands.merge-locales.labels.configJson"), configJson);
+			CLIDisplay.break();
 
-			try {
-				CLIDisplay.value(
-					I18n.formatMessage("commands.merge-locales.labels.configJson"),
-					configJson
-				);
-				CLIDisplay.break();
+			CLIDisplay.task(I18n.formatMessage("commands.merge-locales.progress.loadingConfigJson"));
+			CLIDisplay.break();
 
-				CLIDisplay.task(I18n.formatMessage("commands.merge-locales.progress.loadingConfigJson"));
-				CLIDisplay.break();
-
-				config = await CLIUtils.readJsonFile<IMergeLocalesConfig>(configJson);
-				CLIDisplay.break();
-			} catch (err) {
-				throw new GeneralError("commands", "commands.merge-locales.configFailed", undefined, err);
-			}
-
-			if (Is.empty(config)) {
-				throw new GeneralError("commands", "commands.merge-locales.configFailed");
-			}
+			config = await CLIUtils.readJsonFile<IMergeLocalesConfig>(configJson);
+			CLIDisplay.break();
+		} catch (err) {
+			throw new GeneralError("commands", "commands.merge-locales.configFailed", undefined, err);
 		}
 
-		await mergeLocales(process.cwd(), config ?? {});
-
-		CLIDisplay.done();
-	} catch (error) {
-		CLIDisplay.error(error);
+		if (Is.empty(config)) {
+			throw new GeneralError("commands", "commands.merge-locales.configFailed");
+		}
 	}
+
+	await mergeLocales(process.cwd(), config ?? {});
+
+	CLIDisplay.done();
 }
 
 /**
