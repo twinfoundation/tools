@@ -108,8 +108,6 @@ export async function actionCommandTsToOpenApi(
 
 		CLIDisplay.break();
 		CLIDisplay.done();
-	} catch (error) {
-		CLIDisplay.error(error);
 	} finally {
 		try {
 			if (outputWorkingDir) {
