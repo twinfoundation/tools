@@ -417,7 +417,7 @@ export async function tsToOpenApi(
 			const requestExample: IHttpRequest | undefined = inputPath.requestExamples?.[0]
 				?.request as IHttpRequest;
 
-			if (Is.object(requestExample.path)) {
+			if (Is.object(requestExample?.path)) {
 				for (const pathOrQueryParam of pathOrQueryParams) {
 					if (requestExample.path[pathOrQueryParam.name]) {
 						pathOrQueryParam.example = requestExample.path[pathOrQueryParam.name];
@@ -945,11 +945,23 @@ async function loadPackages(
 		tags: ITag[];
 	}[] = [];
 
+	let localNpmRoot = await CLIUtils.findNpmRoot(process.cwd());
+	localNpmRoot = localNpmRoot.replace(/[/\\]node_modules/, "");
+
 	const packages: string[] = [];
+	const localPackages: string[] = [];
+
 	for (const configRestRoutes of tsToOpenApiConfig.restRoutes) {
 		if (Is.stringValue(configRestRoutes.package)) {
-			const version = configRestRoutes.version ?? "latest";
-			packages.push(`${configRestRoutes.package}@${version}`);
+			const existsLocally = await CLIUtils.dirExists(
+				path.join(localNpmRoot, "node_modules", configRestRoutes.package)
+			);
+			if (existsLocally) {
+				localPackages.push(configRestRoutes.package);
+			} else {
+				const version = configRestRoutes.version ?? "latest";
+				packages.push(`${configRestRoutes.package}@${version}`);
+			}
 		}
 	}
 
@@ -959,9 +971,9 @@ async function loadPackages(
 			packages.join(" ")
 		);
 		await CLIUtils.runShellCmd("npm", ["install", ...packages], outputWorkingDir);
+		CLIDisplay.break();
 	}
 
-	CLIDisplay.break();
 	for (const configRestRoutes of tsToOpenApiConfig.restRoutes) {
 		const typeFolders = ["models", "errors"];
 		const packageName = configRestRoutes.package;
@@ -970,10 +982,21 @@ async function loadPackages(
 			// eslint-disable-next-line no-restricted-syntax
 			throw new Error("Package name or root must be specified");
 		}
-		const rootFolder = Is.stringValue(packageName)
-			? path.join(outputWorkingDir, "node_modules", packageName)
-			: path.resolve(packageRoot ?? "");
-		const npmResolveFolder = Is.stringValue(packageName) ? outputWorkingDir : rootFolder;
+
+		let rootFolder;
+		let npmResolveFolder;
+		if (Is.stringValue(packageName)) {
+			if (localPackages.includes(packageName)) {
+				npmResolveFolder = localNpmRoot;
+				rootFolder = path.join(localNpmRoot, "node_modules", packageName);
+			} else {
+				npmResolveFolder = outputWorkingDir;
+				rootFolder = path.join(outputWorkingDir, "node_modules", packageName);
+			}
+		} else {
+			rootFolder = path.resolve(packageRoot ?? "");
+			npmResolveFolder = rootFolder;
+		}
 
 		const pkgJson = (await CLIUtils.readJsonFile<IPackageJson>(
 			path.join(rootFolder, "package.json")
