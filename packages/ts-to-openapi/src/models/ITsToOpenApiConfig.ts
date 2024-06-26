@@ -60,18 +60,21 @@ export interface ITsToOpenApiConfig {
 		packageRoot?: string;
 
 		/**
-		 * The name of the routes method in the package, defaults to generateRoutes.
+		 * The routes method and tag properties, defaults to "generateRoutes" and "tags".
 		 */
-		routesMethod?: string;
-
-		/**
-		 * The tag property exported from the package, defaults to tags.
-		 */
-		tagProperty?: string;
+		routesAndTags?: {
+			routesMethod: string;
+			tagProperty: string;
+		}[];
 
 		/**
 		 * The path for the root of the routes, defaults to nothing.
 		 */
 		pathRoot?: string;
+
+		/**
+		 * If using the same routes on multiple paths use the distinguish to avoid operationId clashes, will be appended to operationIds.
+		 */
+		operationIdDistinguisher?: string;
 	}[];
 }

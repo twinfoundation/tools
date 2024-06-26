@@ -18,6 +18,7 @@
 		"**/wordlists/**"
 	],
 	"words": [
+		"Distinguisher",
 		"GTSC",
 		"nameof",
 		"openapi",

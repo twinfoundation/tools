@@ -224,13 +224,16 @@ export async function tsToOpenApi(
 
 	const typeRoots: string[] = [];
 
-	const restRoutes = await loadPackages(config, workingDirectory, typeRoots);
+	const restRoutesAndTags = await loadPackages(config, workingDirectory, typeRoots);
 
-	for (const restRoute of restRoutes) {
-		const result = await processPackageRestDetails(restRoute);
-		inputResults.push(result);
+	for (const restRouteAndTag of restRoutesAndTags) {
+		const paths = await processPackageRestDetails(restRouteAndTag.restRoutes);
+		inputResults.push({
+			paths,
+			tags: restRouteAndTag.tags
+		});
 
-		for (const inputPath of result.paths) {
+		for (const inputPath of paths) {
 			if (inputPath.requestType && !types.includes(inputPath.requestType)) {
 				types.push(inputPath.requestType);
 			}
@@ -254,7 +257,10 @@ export async function tsToOpenApi(
 	for (let i = 0; i < inputResults.length; i++) {
 		const result = inputResults[i];
 		for (const tag of result.tags) {
-			openApi.tags?.push(tag);
+			const exists = openApi.tags?.find(t => t.name === tag.name);
+			if (!exists) {
+				openApi.tags?.push(tag);
+			}
 		}
 
 		for (const inputPath of result.paths) {
@@ -657,18 +663,12 @@ export async function tsToOpenApi(
  * @returns The paths and schemas for the input.
  * @internal
  */
-async function processPackageRestDetails(packageDetails: {
-	restRoutes: IRestRoute[];
-	tags: ITag[];
-}): Promise<IInputResult> {
-	const result: IInputResult = {
-		paths: [],
-		tags: []
-	};
+async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInputPath[]> {
+	const paths: IInputPath[] = [];
 
 	CLIDisplay.task(I18n.formatMessage("commands.ts-to-openapi.progress.processingRoutes"));
 
-	for (const route of packageDetails.restRoutes) {
+	for (const route of restRoutes) {
 		CLIDisplay.value(
 			I18n.formatMessage("commands.ts-to-openapi.labels.route"),
 			`${route.operationId} ${route.method} ${route.path}`,
@@ -751,12 +751,12 @@ async function processPackageRestDetails(packageDetails: {
 			inputPath.responseCodes.push(match[1]);
 		}
 
-		result.paths.push(inputPath);
+		paths.push(inputPath);
 	}
 
 	CLIDisplay.break();
 
-	return result;
+	return paths;
 }
 
 /**
@@ -957,10 +957,15 @@ async function loadPackages(
 				path.join(localNpmRoot, "node_modules", configRestRoutes.package)
 			);
 			if (existsLocally) {
-				localPackages.push(configRestRoutes.package);
+				if (!localPackages.includes(configRestRoutes.package)) {
+					localPackages.push(configRestRoutes.package);
+				}
 			} else {
 				const version = configRestRoutes.version ?? "latest";
-				packages.push(`${configRestRoutes.package}@${version}`);
+				const newPackage = `${configRestRoutes.package}@${version}`;
+				if (!packages.includes(newPackage)) {
+					packages.push(`${configRestRoutes.package}@${version}`);
+				}
 			}
 		}
 	}
@@ -1009,7 +1014,10 @@ async function loadPackages(
 		for (const typeFolder of typeFolders) {
 			const typesDir = path.join(rootFolder, "dist", "types", typeFolder);
 			if (await CLIUtils.dirExists(typesDir)) {
-				typeRoots.push(path.join(typesDir, "**/*.ts"));
+				const newRoot = path.join(typesDir, "**/*.ts");
+				if (!typeRoots.includes(newRoot)) {
+					typeRoots.push(newRoot);
+				}
 			}
 		}
 		if (pkgJson.dependencies) {
@@ -1019,7 +1027,10 @@ async function loadPackages(
 					for (const typeFolder of typeFolders) {
 						const typesDirDep = path.join(nodeModulesFolder, dep, "dist", "types", typeFolder);
 						if (await CLIUtils.dirExists(typesDirDep)) {
-							typeRoots.push(path.join(typesDirDep, "**/*.ts"));
+							const newRoot = path.join(typesDirDep, "**/*.ts");
+							if (!typeRoots.includes(newRoot)) {
+								typeRoots.push(newRoot);
+							}
 						}
 					}
 				}
@@ -1032,12 +1043,26 @@ async function loadPackages(
 		);
 
 		const pkg = await import(`file://${path.join(rootFolder, "dist/esm/index.mjs")}`);
-		const generateMethod = configRestRoutes.routesMethod ?? "generateRestRoutes";
-		const tagsProperty = configRestRoutes.tagProperty ?? "tags";
-		restRoutes.push({
-			restRoutes: pkg[generateMethod](configRestRoutes.pathRoot ?? "", "dummy-service"),
-			tags: pkg[tagsProperty]
-		});
+		const routesAndTags = configRestRoutes.routesAndTags ?? [
+			{ routesMethod: "generateRestRoutes", tagProperty: "tags" }
+		];
+
+		for (const routeAndTag of routesAndTags) {
+			const routes = pkg[routeAndTag.routesMethod](
+				configRestRoutes.pathRoot ?? "",
+				"dummy-service"
+			);
+			if (Is.stringValue(configRestRoutes.operationIdDistinguisher)) {
+				for (const route of routes) {
+					route.operationId = `${route.operationId}${configRestRoutes.operationIdDistinguisher}`;
+				}
+			}
+
+			restRoutes.push({
+				restRoutes: routes,
+				tags: pkg[routeAndTag.tagProperty]
+			});
+		}
 
 		CLIDisplay.break();
 	}
