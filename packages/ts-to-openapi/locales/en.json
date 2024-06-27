@@ -2,7 +2,8 @@
 	"error": {
 		"commands": {
 			"ts-to-openapi": {
-				"configFailed": "Configuration failed to load."
+				"configFailed": "Configuration failed to load.",
+				"missingRestRoutesMethod": "Missing REST routes method \"{method}\" in package \"{package}\"."
 			}
 		}
 	},

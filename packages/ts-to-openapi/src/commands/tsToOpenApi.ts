@@ -423,10 +423,10 @@ export async function tsToOpenApi(
 			const requestExample: IHttpRequest | undefined = inputPath.requestExamples?.[0]
 				?.request as IHttpRequest;
 
-			if (Is.object(requestExample?.path)) {
+			if (Is.object(requestExample?.pathParams)) {
 				for (const pathOrQueryParam of pathOrQueryParams) {
-					if (requestExample.path[pathOrQueryParam.name]) {
-						pathOrQueryParam.example = requestExample.path[pathOrQueryParam.name];
+					if (requestExample.pathParams[pathOrQueryParam.name]) {
+						pathOrQueryParam.example = requestExample.pathParams[pathOrQueryParam.name];
 					}
 				}
 			}
@@ -1048,10 +1048,19 @@ async function loadPackages(
 		];
 
 		for (const routeAndTag of routesAndTags) {
-			const routes = pkg[routeAndTag.routesMethod](
+			if (!Is.function(pkg[routeAndTag.routesMethod])) {
+				throw new GeneralError("commands", "commands.ts-to-openapi.missingRestRoutesMethod", {
+					method: routeAndTag.routesMethod,
+					package: pkgJson.name
+				});
+			}
+			let routes: IRestRoute[] = pkg[routeAndTag.routesMethod](
 				configRestRoutes.pathRoot ?? "",
 				"dummy-service"
 			);
+
+			routes = routes.filter(r => !(r.excludeFromSpec ?? false));
+
 			if (Is.stringValue(configRestRoutes.operationIdDistinguisher)) {
 				for (const route of routes) {
 					route.operationId = `${route.operationId}${configRestRoutes.operationIdDistinguisher}`;
