@@ -437,17 +437,17 @@ export async function tsToOpenApi(
 
 			if (requestObject?.properties) {
 				// If there is a path object convert these to params
-				if (Is.object<JSONSchema7>(requestObject.properties.path)) {
+				if (Is.object<JSONSchema7>(requestObject.properties.pathParams)) {
 					for (const pathParam of pathOrQueryParams) {
-						const prop = requestObject.properties.path.properties?.[pathParam.name];
+						const prop = requestObject.properties.pathParams.properties?.[pathParam.name];
 						if (Is.object<JSONSchema7>(prop)) {
 							pathParam.description = prop.description ?? pathParam.description;
 							pathParam.type = (prop.type as string) ?? pathParam.type;
 							pathParam.required = true;
-							delete requestObject.properties.path.properties?.[pathParam.name];
+							delete requestObject.properties.pathParams.properties?.[pathParam.name];
 						}
 					}
-					delete requestObject.properties.path;
+					delete requestObject.properties.pathParams;
 				}
 
 				// If there is a query object convert these to params as well

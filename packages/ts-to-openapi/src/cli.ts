@@ -21,8 +21,8 @@ export class CLI extends CLIBase {
 			{
 				title: "GTSC TypeScript To OpenAPI",
 				appName: "ts-to-openapi",
-				version: "0.0.4-next.22",
-				icon: "🌍",
+				version: "0.0.4-next.23",
+				icon: "⚙️ ",
 				supportsEnvFiles: false
 			},
 			localesDirectory ?? path.join(path.dirname(fileURLToPath(import.meta.url)), "../locales"),
