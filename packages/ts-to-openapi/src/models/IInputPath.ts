@@ -69,4 +69,9 @@ export interface IInputPath {
 	 * Response codes.
 	 */
 	responseCodes: string[];
+
+	/**
+	 * Skip authentication for this path.
+	 */
+	skipAuth: boolean;
 }

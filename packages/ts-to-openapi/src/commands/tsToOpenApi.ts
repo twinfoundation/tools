@@ -268,7 +268,7 @@ export async function tsToOpenApi(
 
 			const responseTypes = inputPath.responseType;
 
-			if (pathSecurity.length > 0) {
+			if (pathSecurity.length > 0 && !inputPath.skipAuth) {
 				responseTypes.push({
 					statusCode: HttpStatusCodes.UNAUTHORIZED,
 					type: nameof<IUnauthorizedResponse>()
@@ -740,7 +740,8 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			requestType: route.requestType?.type,
 			requestExamples: route.requestType?.examples,
 			responseType,
-			responseCodes: ["BAD_REQUEST"]
+			responseCodes: ["BAD_REQUEST"],
+			skipAuth: route.skipAuth ?? false
 		};
 
 		const handlerSource = route.handler.toString();
