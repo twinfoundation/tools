@@ -21,7 +21,7 @@ export class CLI extends CLIBase {
 			{
 				title: "GTSC TypeScript To OpenAPI",
 				appName: "ts-to-openapi",
-				version: "0.0.4-next.24",
+				version: "0.0.4-next.25",
 				icon: "⚙️ ",
 				supportsEnvFiles: false
 			},
