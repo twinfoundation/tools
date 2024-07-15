@@ -15,7 +15,7 @@ import type {
 import { CLIDisplay, CLIUtils } from "@gtsc/cli-core";
 import { GeneralError, I18n, Is, StringHelper } from "@gtsc/core";
 import { nameof } from "@gtsc/nameof";
-import { HttpStatusCodes } from "@gtsc/web";
+import { HttpStatusCode } from "@gtsc/web";
 import type { Command } from "commander";
 import type { JSONSchema7 } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
@@ -251,7 +251,7 @@ export async function tsToOpenApi(
 	CLIDisplay.task(I18n.formatMessage("commands.ts-to-openapi.progress.generatingSchemas"));
 	const schemas = await generateSchemas(typeRoots, types, workingDirectory);
 
-	const usedCommonResponseTypes: string[] = ["IErrorResponse"];
+	const usedCommonResponseTypes: string[] = [];
 
 	for (let i = 0; i < inputResults.length; i++) {
 		const result = inputResults[i];
@@ -263,13 +263,13 @@ export async function tsToOpenApi(
 		}
 
 		for (const inputPath of result.paths) {
-			const responses: ({ code?: HttpStatusCodes } & IOpenApiResponse)[] = [];
+			const responses: ({ code?: HttpStatusCode } & IOpenApiResponse)[] = [];
 
 			const responseTypes = inputPath.responseType;
 
 			if (pathSecurity.length > 0 && !inputPath.skipAuth) {
 				responseTypes.push({
-					statusCode: HttpStatusCodes.UNAUTHORIZED,
+					statusCode: HttpStatusCode.unauthorized,
 					type: nameof<IUnauthorizedResponse>()
 				});
 			}
@@ -342,8 +342,8 @@ export async function tsToOpenApi(
 						usedCommonResponseTypes.push(r.type);
 					}
 				} else if (r.mimeType) {
-					const resp: { code: number } & IOpenApiResponse = {
-						code: HttpStatusCodes.OK,
+					const resp: { code: HttpStatusCode } & IOpenApiResponse = {
+						code: HttpStatusCode.ok,
 						description: r.description,
 						content: {}
 					};
@@ -576,37 +576,50 @@ export async function tsToOpenApi(
 	} = {};
 	for (const schema in schemas) {
 		const props = schemas[schema].properties;
+		let skipSchema = false;
 
 		if (Is.object(props)) {
 			tidySchemaProperties(props);
 
-			// Promote any schemas with just a single body property to the top level
-			if (Is.object<JSONSchema7>(props.body) && Object.keys(props).length === 1) {
-				schemas[schema] = props.body;
+			// Any response objects should be added to the final schemas
+			// but only the body property, if there is no body then we don't
+			// need to add it to the schemas
+			if (schema.endsWith("Response")) {
+				if (Is.object<JSONSchema7>(props.body)) {
+					schemas[schema] = props.body;
+				} else {
+					skipSchema = true;
+				}
 			}
 		}
 
-		// If the final schema has no properties and is just a ref to another object type
-		// then replace the references with that of the referenced type
-		const ref = schemas[schema].$ref;
-		if (!Is.arrayValue(schemas[schema].properties) && Is.stringValue(ref)) {
-			substituteSchemas.push({ from: schema, to: ref });
-		} else {
-			let finalName = schema;
+		if (!skipSchema) {
+			// If the final schema has no properties and is just a ref to another object type
+			// then replace the references with that of the referenced type
+			const ref = schemas[schema].$ref;
+			if (!Is.arrayValue(schemas[schema].properties) && Is.stringValue(ref)) {
+				substituteSchemas.push({ from: schema, to: ref });
+			} else {
+				let finalName = schema;
 
-			// If the type has an interface name e.g. ISomething then strip the I
-			if (/I[A-Z]/.test(finalName)) {
-				finalName = finalName.slice(1);
+				// If the type has an interface name e.g. ISomething then strip the I
+				if (/I[A-Z]/.test(finalName)) {
+					finalName = finalName.slice(1);
+				}
+
+				finalName = finalName.replace("<", "_").replace(">", "_");
+
+				if (finalName.endsWith("[]")) {
+					finalName = `ListOf${finalName.slice(0, -2)}`;
+				}
+
+				finalSchemas[finalName] = schemas[schema];
 			}
-
-			finalName = finalName.replace("<", "_").replace(">", "_");
-
-			if (finalName.endsWith("[]")) {
-				finalName = `ListOf${finalName.slice(0, -2)}`;
-			}
-
-			finalSchemas[finalName] = schemas[schema];
 		}
+	}
+
+	if (finalSchemas.HttpStatusCode) {
+		delete finalSchemas.HttpStatusCode;
 	}
 
 	openApi.components = {
@@ -687,7 +700,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 		}
 
 		const responseType: {
-			statusCode: HttpStatusCodes;
+			statusCode: HttpStatusCode;
 			type?: string;
 			mimeType?: string;
 			description?: string;
@@ -701,7 +714,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 		if (route.responseContentType) {
 			for (const contentType of route.responseContentType) {
 				responseType.push({
-					statusCode: HttpStatusCodes.OK,
+					statusCode: HttpStatusCode.ok,
 					description: contentType.description,
 					mimeType: contentType.mimeType
 				});
@@ -714,7 +727,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			if (responseType.length === 0) {
 				responseType.push({
 					type: nameof<IOkResponse>(),
-					statusCode: HttpStatusCodes.OK
+					statusCode: HttpStatusCode.ok
 				});
 			}
 		} else if (Is.array(route.responseType)) {
@@ -739,14 +752,14 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			requestType: route.requestType?.type,
 			requestExamples: route.requestType?.examples,
 			responseType,
-			responseCodes: ["BAD_REQUEST"],
+			responseCodes: ["badRequest"],
 			skipAuth: route.skipAuth ?? false
 		};
 
 		const handlerSource = route.handler.toString();
 
 		let match;
-		const re = /HttpStatusCodes\.([A-Z_]*)/g;
+		const re = /httpstatuscode\.([_a-z]*)/gi;
 		while ((match = re.exec(handlerSource)) !== null) {
 			inputPath.responseCodes.push(match[1]);
 		}

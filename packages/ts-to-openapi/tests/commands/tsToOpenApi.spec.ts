@@ -51,11 +51,11 @@ describe("TSToOpenApi", () => {
 			servers: ["https://localhost"],
 			authMethods: ["jwtBearer"],
 			restRoutes: [
-				// {
-				// 	package: "@gtsc/logging-service",
-				// 	version: "next",
-				// 	pathRoot: "/logging"
-				// },
+				{
+					package: "@gtsc/logging-service",
+					version: "next",
+					pathRoot: "/logging"
+				}
 				// {
 				// 	package: "@gtsc/identity-service",
 				// 	version: "next",

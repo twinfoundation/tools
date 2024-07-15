@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { HttpMethods, HttpStatusCodes } from "@gtsc/web";
+import type { HttpMethod, HttpStatusCode } from "@gtsc/web";
 
 /**
  * The resulting details for a REST path.
@@ -14,7 +14,7 @@ export interface IInputPath {
 	/**
 	 * The REST method.
 	 */
-	method: HttpMethods;
+	method: HttpMethod;
 
 	/**
 	 * The parameters contained in the path.
@@ -54,7 +54,7 @@ export interface IInputPath {
 	 * The response type.
 	 */
 	responseType: {
-		statusCode: HttpStatusCodes;
+		statusCode: HttpStatusCode;
 		type?: string;
 		mimeType?: string;
 		description?: string;

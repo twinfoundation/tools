@@ -13,33 +13,33 @@ import type {
 	IUnprocessableEntityResponse
 } from "@gtsc/api-models";
 import { nameof } from "@gtsc/nameof";
-import { HttpStatusCodes } from "@gtsc/web";
+import { HttpStatusCode } from "@gtsc/web";
 
 export const HTTP_STATUS_CODE_MAP: {
 	[id: string]: {
-		code: HttpStatusCodes;
+		code: HttpStatusCode;
 		responseType: string;
 		example?: unknown;
 	};
 } = {
-	OK: {
-		code: HttpStatusCodes.OK,
+	ok: {
+		code: HttpStatusCode.ok,
 		responseType: nameof<IOkResponse>()
 	},
-	CREATED: {
-		code: HttpStatusCodes.CREATED,
+	created: {
+		code: HttpStatusCode.created,
 		responseType: nameof<ICreatedResponse>()
 	},
-	ACCEPTED: {
-		code: HttpStatusCodes.ACCEPTED,
+	accepted: {
+		code: HttpStatusCode.accepted,
 		responseType: nameof<IAcceptedResponse>()
 	},
-	NO_CONTENT: {
-		code: HttpStatusCodes.NO_CONTENT,
+	noContent: {
+		code: HttpStatusCode.noContent,
 		responseType: nameof<INoContentResponse>()
 	},
-	BAD_REQUEST: {
-		code: HttpStatusCodes.BAD_REQUEST,
+	badRequest: {
+		code: HttpStatusCode.badRequest,
 		responseType: nameof<IBadRequestResponse>(),
 		example: {
 			name: "GeneralError",
@@ -49,16 +49,16 @@ export const HTTP_STATUS_CODE_MAP: {
 			}
 		}
 	},
-	UNAUTHORIZED: {
-		code: HttpStatusCodes.UNAUTHORIZED,
+	unauthorized: {
+		code: HttpStatusCode.unauthorized,
 		responseType: nameof<IUnauthorizedResponse>(),
 		example: {
 			name: "UnauthorizedError",
 			message: "component.error"
 		}
 	},
-	FORBIDDEN: {
-		code: HttpStatusCodes.FORBIDDEN,
+	forbidden: {
+		code: HttpStatusCode.forbidden,
 		responseType: nameof<IForbiddenResponse>(),
 		example: {
 			name: "NotImplementedError",
@@ -68,8 +68,8 @@ export const HTTP_STATUS_CODE_MAP: {
 			}
 		}
 	},
-	NOT_FOUND: {
-		code: HttpStatusCodes.NOT_FOUND,
+	notFound: {
+		code: HttpStatusCode.notFound,
 		responseType: nameof<INotFoundResponse>(),
 		example: {
 			name: "NotFoundError",
@@ -79,8 +79,8 @@ export const HTTP_STATUS_CODE_MAP: {
 			}
 		}
 	},
-	CONFLICT: {
-		code: HttpStatusCodes.CONFLICT,
+	conflict: {
+		code: HttpStatusCode.conflict,
 		responseType: nameof<IConflictResponse>(),
 		example: {
 			name: "ConflictError",
@@ -90,8 +90,8 @@ export const HTTP_STATUS_CODE_MAP: {
 			}
 		}
 	},
-	UNPROCESSABLE_ENTITY: {
-		code: HttpStatusCodes.UNPROCESSABLE_ENTITY,
+	unprocessableEntity: {
+		code: HttpStatusCode.unprocessableEntity,
 		responseType: nameof<IUnprocessableEntityResponse>(),
 		example: {
 			name: "AlreadyExistsError",
@@ -108,13 +108,13 @@ export const HTTP_STATUS_CODE_MAP: {
  * @param errorCodeType The error code type.
  * @returns The HTTP status code.
  */
-export function getHttpStatusCodeFromType(errorCodeType: string): HttpStatusCodes {
+export function getHttpStatusCodeFromType(errorCodeType: string): HttpStatusCode {
 	for (const httpStatusCodeType of Object.values(HTTP_STATUS_CODE_MAP)) {
 		if (httpStatusCodeType.responseType === errorCodeType) {
 			return httpStatusCodeType.code;
 		}
 	}
-	return HttpStatusCodes.OK;
+	return HttpStatusCode.ok;
 }
 
 /**
