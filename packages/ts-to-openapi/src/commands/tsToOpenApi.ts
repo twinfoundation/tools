@@ -582,10 +582,10 @@ export async function tsToOpenApi(
 		if (Is.object(props)) {
 			tidySchemaProperties(props);
 
-			// Any response objects should be added to the final schemas
+			// Any request/response objects should be added to the final schemas
 			// but only the body property, if there is no body then we don't
 			// need to add it to the schemas
-			if (schema.endsWith("Response")) {
+			if (schema.endsWith("Response") && schema.endsWith("Request")) {
 				if (Is.object<JSONSchema7>(props.body)) {
 					schemas[schema] = props.body;
 				} else {
