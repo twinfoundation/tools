@@ -619,10 +619,6 @@ export async function tsToOpenApi(
 		}
 	}
 
-	if (finalSchemas.HttpStatusCode) {
-		delete finalSchemas.HttpStatusCode;
-	}
-
 	openApi.components = {
 		schemas: finalSchemas,
 		securitySchemes
