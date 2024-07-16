@@ -52,15 +52,10 @@ describe("TSToOpenApi", () => {
 			authMethods: ["jwtBearer"],
 			restRoutes: [
 				{
-					package: "@gtsc/logging-service",
+					package: "@gtsc/api-core",
 					version: "next",
-					pathRoot: "/logging"
+					pathRoot: ""
 				}
-				// {
-				// 	package: "@gtsc/identity-service",
-				// 	version: "next",
-				// 	pathRoot: "/identity"
-				// }
 			]
 		};
 

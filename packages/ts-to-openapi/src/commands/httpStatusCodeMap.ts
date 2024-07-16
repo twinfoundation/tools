@@ -9,8 +9,7 @@ import type {
 	INoContentResponse,
 	INotFoundResponse,
 	IOkResponse,
-	IUnauthorizedResponse,
-	IUnprocessableEntityResponse
+	IUnauthorizedResponse
 } from "@gtsc/api-models";
 import { nameof } from "@gtsc/nameof";
 import { HttpStatusCode } from "@gtsc/web";
@@ -87,17 +86,6 @@ export const HTTP_STATUS_CODE_MAP: {
 			message: "component.error",
 			properties: {
 				conflicts: ["1"]
-			}
-		}
-	},
-	unprocessableEntity: {
-		code: HttpStatusCode.unprocessableEntity,
-		responseType: nameof<IUnprocessableEntityResponse>(),
-		example: {
-			name: "AlreadyExistsError",
-			message: "component.error",
-			properties: {
-				existingId: "1"
 			}
 		}
 	}

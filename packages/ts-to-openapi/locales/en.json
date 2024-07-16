@@ -3,7 +3,8 @@
 		"commands": {
 			"ts-to-openapi": {
 				"configFailed": "Configuration failed to load.",
-				"missingRestRoutesMethod": "Missing REST routes method \"{method}\" in package \"{package}\"."
+				"missingRestRoutesEntryPoints": "Missing REST routes method \"{method}\" in package \"{package}\".",
+				"missingRestRoutesEntryPoint": "Missing REST routes entryPoint \"{entryPoint}\" in package \"{package}\"."
 			}
 		}
 	},

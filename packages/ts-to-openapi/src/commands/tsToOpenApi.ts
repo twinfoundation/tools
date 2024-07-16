@@ -9,6 +9,7 @@ import type {
 	INoContentResponse,
 	IOkResponse,
 	IRestRoute,
+	IRestRouteEntryPoint,
 	ITag,
 	IUnauthorizedResponse
 } from "@gtsc/api-models";
@@ -1056,18 +1057,29 @@ async function loadPackages(
 		);
 
 		const pkg = await import(`file://${path.join(rootFolder, "dist/esm/index.mjs")}`);
-		const routesAndTags = configRestRoutes.routesAndTags ?? [
-			{ routesMethod: "generateRestRoutes", tagProperty: "tags" }
-		];
 
-		for (const routeAndTag of routesAndTags) {
-			if (!Is.function(pkg[routeAndTag.routesMethod])) {
-				throw new GeneralError("commands", "commands.ts-to-openapi.missingRestRoutesMethod", {
-					method: routeAndTag.routesMethod,
+		if (!Is.array(pkg.restEntryPoints)) {
+			throw new GeneralError("commands", "commands.ts-to-openapi.missingRestRoutesEntryPoints", {
+				method: "restEntryPoints",
+				package: pkgJson.name
+			});
+		}
+
+		const entryPoints: IRestRouteEntryPoint[] = pkg.restEntryPoints;
+
+		const entryPointNames = configRestRoutes.entryPointNames ?? entryPoints.map(e => e.name);
+
+		for (const entryPointName of entryPointNames) {
+			const entryPoint = entryPoints.find(e => e.name === entryPointName);
+
+			if (!Is.object(entryPoint)) {
+				throw new GeneralError("commands", "commands.ts-to-openapi.missingRestRoutesEntryPoint", {
+					entryPoint: entryPointName,
 					package: pkgJson.name
 				});
 			}
-			let routes: IRestRoute[] = pkg[routeAndTag.routesMethod](
+
+			let routes: IRestRoute[] = entryPoint.generateRoutes(
 				configRestRoutes.pathRoot ?? "",
 				"dummy-service"
 			);
@@ -1082,7 +1094,7 @@ async function loadPackages(
 
 			restRoutes.push({
 				restRoutes: routes,
-				tags: pkg[routeAndTag.tagProperty]
+				tags: entryPoint.tags
 			});
 		}
 
