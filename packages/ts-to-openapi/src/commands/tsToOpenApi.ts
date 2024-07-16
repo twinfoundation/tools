@@ -811,7 +811,8 @@ async function generateSchemas(
 			path: files.replace(/\\/g, "/"),
 			type: "*",
 			tsconfig: path.join(outputWorkingDir, "tsconfig.json"),
-			skipTypeCheck: true
+			skipTypeCheck: true,
+			expose: "all"
 		});
 
 		const schema = generator.createSchema("*");
