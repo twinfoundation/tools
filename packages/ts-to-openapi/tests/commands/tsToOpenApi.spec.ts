@@ -52,7 +52,7 @@ describe("TSToOpenApi", () => {
 			authMethods: ["jwtBearer"],
 			restRoutes: [
 				{
-					package: "@gtsc/api-core",
+					package: "@gtsc/api-service",
 					version: "next",
 					pathRoot: ""
 				}
