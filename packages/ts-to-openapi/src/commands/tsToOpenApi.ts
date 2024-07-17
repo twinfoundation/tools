@@ -1087,9 +1087,13 @@ async function loadPackages(
 				});
 			}
 
-			const baseRouteName = StringHelper.trimTrailingSlashes(
+			let baseRouteName = StringHelper.trimTrailingSlashes(
 				entryPoint.baseRoutePath ?? packageEntryPoint.defaultBaseRoute ?? ""
 			);
+
+			if (baseRouteName.length > 0) {
+				baseRouteName = `/${StringHelper.trimLeadingSlashes(baseRouteName)}`;
+			}
 
 			let routes: IRestRoute[] = packageEntryPoint.generateRoutes(baseRouteName, "dummy-service");
 
