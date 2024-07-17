@@ -53,8 +53,7 @@ describe("TSToOpenApi", () => {
 			restRoutes: [
 				{
 					package: "@gtsc/api-service",
-					version: "next",
-					pathRoot: ""
+					version: "next"
 				}
 			]
 		};

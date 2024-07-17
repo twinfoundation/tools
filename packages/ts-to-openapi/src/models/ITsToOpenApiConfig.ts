@@ -1,5 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import type { ITsToOpenApiConfigEntryPoint } from "./ITsToOpenApiConfigEntryPoint";
 
 /**
  * Configuration for the API.
@@ -62,16 +63,6 @@ export interface ITsToOpenApiConfig {
 		/**
 		 * The rest entry points to include, defaults to all exported entry points.
 		 */
-		entryPointNames?: string[];
-
-		/**
-		 * The path for the root of the routes, defaults to nothing.
-		 */
-		pathRoot?: string;
-
-		/**
-		 * If using the same routes on multiple paths use the distinguisher to avoid operationId clashes, will be appended to operationIds.
-		 */
-		operationIdDistinguisher?: string;
+		entryPoints?: ITsToOpenApiConfigEntryPoint[];
 	}[];
 }

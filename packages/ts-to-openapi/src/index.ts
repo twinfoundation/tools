@@ -3,3 +3,4 @@
 export * from "./cli";
 export * from "./commands/tsToOpenApi";
 export * from "./models/ITsToOpenApiConfig";
+export * from "./models/ITsToOpenApiConfigEntryPoint";

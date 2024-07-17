@@ -34,6 +34,7 @@ import type { IOpenApiResponse } from "../models/IOpenApiResponse";
 import type { IOpenApiSecurityScheme } from "../models/IOpenApiSecurityScheme";
 import type { IPackageJson } from "../models/IPackageJson";
 import type { ITsToOpenApiConfig } from "../models/ITsToOpenApiConfig";
+import type { ITsToOpenApiConfigEntryPoint } from "../models/ITsToOpenApiConfigEntryPoint";
 
 /**
  * Build the root command to be consumed by the CLI.
@@ -1071,36 +1072,38 @@ async function loadPackages(
 			});
 		}
 
-		const entryPoints: IRestRouteEntryPoint[] = pkg.restEntryPoints;
+		const packageEntryPoints: IRestRouteEntryPoint[] = pkg.restEntryPoints;
 
-		const entryPointNames = configRestRoutes.entryPointNames ?? entryPoints.map(e => e.name);
+		const entryPoints: ITsToOpenApiConfigEntryPoint[] =
+			configRestRoutes.entryPoints ?? packageEntryPoints.map(e => ({ name: e.name }));
 
-		for (const entryPointName of entryPointNames) {
-			const entryPoint = entryPoints.find(e => e.name === entryPointName);
+		for (const entryPoint of entryPoints) {
+			const packageEntryPoint = packageEntryPoints.find(e => e.name === entryPoint.name);
 
-			if (!Is.object(entryPoint)) {
+			if (!Is.object<IRestRouteEntryPoint>(packageEntryPoint)) {
 				throw new GeneralError("commands", "commands.ts-to-openapi.missingRestRoutesEntryPoint", {
-					entryPoint: entryPointName,
+					entryPoint: entryPoint.name,
 					package: pkgJson.name
 				});
 			}
 
-			let routes: IRestRoute[] = entryPoint.generateRoutes(
-				configRestRoutes.pathRoot ?? "",
-				"dummy-service"
+			const baseRouteName = StringHelper.trimTrailingSlashes(
+				entryPoint.baseRoutePath ?? packageEntryPoint.defaultBaseRoute ?? ""
 			);
+
+			let routes: IRestRoute[] = packageEntryPoint.generateRoutes(baseRouteName, "dummy-service");
 
 			routes = routes.filter(r => !(r.excludeFromSpec ?? false));
 
-			if (Is.stringValue(configRestRoutes.operationIdDistinguisher)) {
+			if (Is.stringValue(entryPoint.operationIdDistinguisher)) {
 				for (const route of routes) {
-					route.operationId = `${route.operationId}${configRestRoutes.operationIdDistinguisher}`;
+					route.operationId = `${route.operationId}${entryPoint.operationIdDistinguisher}`;
 				}
 			}
 
 			restRoutes.push({
 				restRoutes: routes,
-				tags: entryPoint.tags
+				tags: packageEntryPoint.tags
 			});
 		}
 
