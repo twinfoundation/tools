@@ -650,6 +650,9 @@ export async function tsToOpenApi(
 	// eslint-disable-next-line unicorn/better-regex
 	json = json.replace(/#\/components\/schemas\/(.*)\[\]/g, "#/components/schemas/ListOf$1");
 
+	// Remove the partial markers
+	json = json.replace(/Partial%3CI(.*?)%3E/g, "$1");
+
 	// Cleanup the generic markers
 	json = json.replace(/%3Cunknown%3E/g, "");
 
@@ -815,8 +818,10 @@ async function generateSchemas(
 
 		if (schema.definitions) {
 			for (const def in schema.definitions) {
+				// Remove the partial markers
+				let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
 				// Cleanup the generic markers
-				const defSub = def.replace(/</g, "%3C").replace(/>/g, "%3E");
+				defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
 				allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
 			}
 		}
