@@ -37,9 +37,14 @@ export interface ITsToOpenApiConfig {
 	servers: string[];
 
 	/**
-	 * The authentication method.
+	 * The authentication methods.
 	 */
-	authMethods?: ("basic" | "jwtBearer" | "jwtCookie" | "apiKeyQuery" | "apiKeyHeader" | string)[];
+	authMethods?: ("basic" | "jwtBearer" | "jwtCookie" | string)[];
+
+	/**
+	 * The partition methods.
+	 */
+	partitionMethods?: ("apiKeyQuery" | "apiKeyHeader" | string)[];
 
 	/**
 	 * The packages containing routes.

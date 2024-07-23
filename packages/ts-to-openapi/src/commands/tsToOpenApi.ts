@@ -172,59 +172,16 @@ export async function tsToOpenApi(
 	CLIDisplay.task(I18n.formatMessage("commands.ts-to-openapi.progress.creatingSecuritySchemas"));
 	CLIDisplay.break();
 
-	const pathSecurity: { [name: string]: string[] }[] = [];
+	const authSecurity: { [name: string]: string[] }[] = [];
+	const partitionSecurity: { [name: string]: string[] }[] = [];
 	const securitySchemes: { [name: string]: IOpenApiSecurityScheme } = {};
 
-	if (Is.arrayValue(config.authMethods)) {
-		for (const authMethod of config.authMethods) {
-			const security: { [name: string]: string[] } = {};
-			if (authMethod === "basic") {
-				securitySchemes.basicAuthScheme = {
-					type: "http",
-					scheme: "basic"
-				};
-				security.basicAuthScheme = [];
-			} else if (authMethod === "jwtBearer") {
-				securitySchemes.jwtBearerAuthScheme = {
-					type: "http",
-					scheme: "bearer",
-					bearerFormat: "JWT"
-				};
-				security.jwtBearerAuthScheme = [];
-			} else if (authMethod === "jwtCookie") {
-				securitySchemes.jwtCookieAuthScheme = {
-					type: "apiKey",
-					in: "cookie",
-					name: "auth_token"
-				};
-				security.jwtCookieAuthScheme = [];
-			} else if (authMethod === "apiKeyQuery") {
-				securitySchemes.apiKeyQueryAuthScheme = {
-					type: "apiKey",
-					in: "query",
-					name: "X-Api-Key"
-				};
-				security.apiKeyQueryAuthScheme = [];
-			} else if (authMethod === "apiKeyHeader") {
-				securitySchemes.apiKeyHeaderAuthScheme = {
-					type: "apiKey",
-					in: "header",
-					name: "X-Api-Key"
-				};
-				security.apiKeyHeaderAuthScheme = [];
-			}
-			pathSecurity.push(security);
-		}
-	}
+	buildSecurity(config, securitySchemes, authSecurity, partitionSecurity);
 
 	const types: string[] = Object.values(HTTP_STATUS_CODE_MAP).map(h => h.responseType);
-
 	const responseCodes: string[] = [];
-
 	const inputResults: IInputResult[] = [];
-
 	const typeRoots: string[] = [];
-
 	const restRoutesAndTags = await loadPackages(config, workingDirectory, typeRoots);
 
 	for (const restRouteAndTag of restRoutesAndTags) {
@@ -266,10 +223,19 @@ export async function tsToOpenApi(
 
 		for (const inputPath of result.paths) {
 			const responses: ({ code?: HttpStatusCode } & IOpenApiResponse)[] = [];
-
 			const responseTypes = inputPath.responseType;
 
-			if (pathSecurity.length > 0 && !inputPath.skipAuth) {
+			const pathSpecificAuthSecurity: { [name: string]: string[] }[] = [];
+
+			if (authSecurity.length > 0 && !inputPath.skipAuth) {
+				pathSpecificAuthSecurity.push(...authSecurity);
+			}
+
+			if (partitionSecurity.length > 0 && !inputPath.skipPartition) {
+				pathSpecificAuthSecurity.push(...partitionSecurity);
+			}
+
+			if (pathSpecificAuthSecurity.length > 0) {
 				responseTypes.push({
 					statusCode: HttpStatusCode.unauthorized,
 					type: nameof<IUnauthorizedResponse>()
@@ -511,8 +477,8 @@ export async function tsToOpenApi(
 							: undefined
 				};
 
-				if (pathSecurity.length > 0) {
-					openApi.paths[fullPath][method].security = pathSecurity;
+				if (authSecurity.length > 0) {
+					openApi.paths[fullPath][method].security = pathSpecificAuthSecurity;
 				}
 
 				if (responses.length > 0) {
@@ -560,15 +526,33 @@ export async function tsToOpenApi(
 		}
 	}
 
+	await finaliseOutput(usedCommonResponseTypes, schemas, openApi, securitySchemes, outputFile);
+}
+
+/**
+ * Finalise the schemas and output the spec.
+ * @param usedCommonResponseTypes The common response types used.
+ * @param schemas The schemas.
+ * @param openApi The OpenAPI spec.
+ * @param securitySchemes The security schemes.
+ * @param outputFile The output file.
+ */
+async function finaliseOutput(
+	usedCommonResponseTypes: string[],
+	schemas: { [id: string]: JSONSchema7 },
+	openApi: IOpenApi,
+	securitySchemes: { [name: string]: IOpenApiSecurityScheme },
+	outputFile: string
+): Promise<void> {
+	CLIDisplay.break();
+	CLIDisplay.task(I18n.formatMessage("commands.ts-to-openapi.progress.finalisingSchemas"));
+
 	// Remove the response codes that we haven't used
 	for (const httpStatusCode in HTTP_STATUS_CODE_MAP) {
 		if (!usedCommonResponseTypes.includes(HTTP_STATUS_CODE_MAP[httpStatusCode].responseType)) {
 			delete schemas[HTTP_STATUS_CODE_MAP[httpStatusCode].responseType];
 		}
 	}
-
-	CLIDisplay.break();
-	CLIDisplay.task(I18n.formatMessage("commands.ts-to-openapi.progress.finalisingSchemas"));
 
 	const substituteSchemas: { from: string; to: string }[] = [];
 
@@ -673,6 +657,70 @@ export async function tsToOpenApi(
 }
 
 /**
+ * Build the security schemas from the config.
+ * @param config The configuration.
+ * @param securitySchemes The security schemes.
+ * @param authSecurity The auth security.
+ * @param partitionSecurity The partition security.
+ */
+function buildSecurity(
+	config: ITsToOpenApiConfig,
+	securitySchemes: { [name: string]: IOpenApiSecurityScheme },
+	authSecurity: { [name: string]: string[] }[],
+	partitionSecurity: { [name: string]: string[] }[]
+): void {
+	if (Is.arrayValue(config.authMethods)) {
+		for (const authMethod of config.authMethods) {
+			const security: { [name: string]: string[] } = {};
+			if (authMethod === "basic") {
+				securitySchemes.basicAuthScheme = {
+					type: "http",
+					scheme: "basic"
+				};
+				security.basicAuthScheme = [];
+			} else if (authMethod === "jwtBearer") {
+				securitySchemes.jwtBearerAuthScheme = {
+					type: "http",
+					scheme: "bearer",
+					bearerFormat: "JWT"
+				};
+				security.jwtBearerAuthScheme = [];
+			} else if (authMethod === "jwtCookie") {
+				securitySchemes.jwtCookieAuthScheme = {
+					type: "apiKey",
+					in: "cookie",
+					name: "auth_token"
+				};
+				security.jwtCookieAuthScheme = [];
+			}
+			authSecurity.push(security);
+		}
+	}
+
+	if (Is.arrayValue(config.partitionMethods)) {
+		for (const partitionMethod of config.partitionMethods) {
+			const security: { [name: string]: string[] } = {};
+			if (partitionMethod === "apiKeyQuery") {
+				securitySchemes.apiKeyQueryAuthScheme = {
+					type: "apiKey",
+					in: "query",
+					name: "X-Api-Key"
+				};
+				security.apiKeyQueryAuthScheme = [];
+			} else if (partitionMethod === "apiKeyHeader") {
+				securitySchemes.apiKeyHeaderAuthScheme = {
+					type: "apiKey",
+					in: "header",
+					name: "X-Api-Key"
+				};
+				security.apiKeyHeaderAuthScheme = [];
+			}
+			partitionSecurity.push(security);
+		}
+	}
+}
+
+/**
  * Process the REST details for a package.
  * @param baseDir The base directory other locations are relative to.
  * @param prefix The prefix.
@@ -757,8 +805,9 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			requestType: route.requestType?.type,
 			requestExamples: route.requestType?.examples,
 			responseType,
-			responseCodes: ["badRequest"],
-			skipAuth: route.skipAuth ?? false
+			responseCodes: ["badRequest", "internalServerError"],
+			skipAuth: route.skipAuth ?? false,
+			skipPartition: route.skipPartition ?? false
 		};
 
 		const handlerSource = route.handler.toString();

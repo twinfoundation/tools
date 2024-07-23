@@ -6,6 +6,7 @@ import type {
 	IConflictResponse,
 	ICreatedResponse,
 	IForbiddenResponse,
+	IInternalServerErrorResponse,
 	INoContentResponse,
 	INotFoundResponse,
 	IOkResponse,
@@ -87,6 +88,14 @@ export const HTTP_STATUS_CODE_MAP: {
 			properties: {
 				conflicts: ["1"]
 			}
+		}
+	},
+	internalServerError: {
+		code: HttpStatusCode.internalServerError,
+		responseType: nameof<IInternalServerErrorResponse>(),
+		example: {
+			name: "InternalServerError",
+			message: "component.error"
 		}
 	}
 };
