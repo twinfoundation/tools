@@ -74,9 +74,4 @@ export interface IInputPath {
 	 * Skip authentication for this path.
 	 */
 	skipAuth: boolean;
-
-	/**
-	 * Skip partition check for this path.
-	 */
-	skipPartition: boolean;
 }

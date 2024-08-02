@@ -173,10 +173,9 @@ export async function tsToOpenApi(
 	CLIDisplay.break();
 
 	const authSecurity: { [name: string]: string[] }[] = [];
-	const partitionSecurity: { [name: string]: string[] }[] = [];
 	const securitySchemes: { [name: string]: IOpenApiSecurityScheme } = {};
 
-	buildSecurity(config, securitySchemes, authSecurity, partitionSecurity);
+	buildSecurity(config, securitySchemes, authSecurity);
 
 	const types: string[] = Object.values(HTTP_STATUS_CODE_MAP).map(h => h.responseType);
 	const responseCodes: string[] = [];
@@ -229,10 +228,6 @@ export async function tsToOpenApi(
 
 			if (authSecurity.length > 0 && !inputPath.skipAuth) {
 				pathSpecificAuthSecurity.push(...authSecurity);
-			}
-
-			if (partitionSecurity.length > 0 && !inputPath.skipPartition) {
-				pathSpecificAuthSecurity.push(...partitionSecurity);
 			}
 
 			if (pathSpecificAuthSecurity.length > 0) {
@@ -661,13 +656,11 @@ async function finaliseOutput(
  * @param config The configuration.
  * @param securitySchemes The security schemes.
  * @param authSecurity The auth security.
- * @param partitionSecurity The partition security.
  */
 function buildSecurity(
 	config: ITsToOpenApiConfig,
 	securitySchemes: { [name: string]: IOpenApiSecurityScheme },
-	authSecurity: { [name: string]: string[] }[],
-	partitionSecurity: { [name: string]: string[] }[]
+	authSecurity: { [name: string]: string[] }[]
 ): void {
 	if (Is.arrayValue(config.authMethods)) {
 		for (const authMethod of config.authMethods) {
@@ -694,28 +687,6 @@ function buildSecurity(
 				security.jwtCookieAuthScheme = [];
 			}
 			authSecurity.push(security);
-		}
-	}
-
-	if (Is.arrayValue(config.partitionMethods)) {
-		for (const partitionMethod of config.partitionMethods) {
-			const security: { [name: string]: string[] } = {};
-			if (partitionMethod === "apiKeyQuery") {
-				securitySchemes.apiKeyQueryAuthScheme = {
-					type: "apiKey",
-					in: "query",
-					name: "X-Api-Key"
-				};
-				security.apiKeyQueryAuthScheme = [];
-			} else if (partitionMethod === "apiKeyHeader") {
-				securitySchemes.apiKeyHeaderAuthScheme = {
-					type: "apiKey",
-					in: "header",
-					name: "X-Api-Key"
-				};
-				security.apiKeyHeaderAuthScheme = [];
-			}
-			partitionSecurity.push(security);
 		}
 	}
 }
@@ -806,8 +777,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			requestExamples: route.requestType?.examples,
 			responseType,
 			responseCodes: ["badRequest", "internalServerError"],
-			skipAuth: route.skipAuth ?? false,
-			skipPartition: route.skipPartition ?? false
+			skipAuth: route.skipAuth ?? false
 		};
 
 		const handlerSource = route.handler.toString();
