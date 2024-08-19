@@ -237,89 +237,113 @@ export async function tsToOpenApi(
 				});
 			}
 
-			for (const r of responseTypes) {
-				if (r.type) {
-					if (schemas[r.type]) {
-						let headers: { [id: string]: IOpenApiHeader } | undefined;
-						let examples: { [id: string]: IOpenApiExample } | undefined;
+			for (const responseType of responseTypes) {
+				if (schemas[responseType.type]) {
+					let headers: { [id: string]: IOpenApiHeader } | undefined;
+					let examples: { [id: string]: IOpenApiExample } | undefined;
 
-						if (Is.arrayValue(r.examples)) {
-							for (const example of r.examples) {
-								if (Is.object<IHttpResponse>(example.response)) {
-									if (Is.objectValue(example.response.headers)) {
-										headers ??= {};
-										const headersSchema = schemas[r.type].properties?.headers as JSONSchema7;
-										for (const header in example.response.headers) {
-											const headerValue = example.response.headers[header];
-											const propertySchema = headersSchema.properties?.[header];
-											const schemaType = Is.object<JSONSchema7>(propertySchema)
-												? propertySchema?.type
-												: undefined;
-											headers[header] = {
-												schema: {
-													type: Is.string(schemaType) ? schemaType : "string"
-												},
-												description: `e.g. ${
-													Is.array(headerValue) ? headerValue.join(",") : headerValue
-												}`
-											};
-										}
-									}
-									if (!Is.undefined(example.response.body)) {
-										examples ??= {};
-										examples[example.id] = {
-											summary: example.description,
-											value: example.response.body
+					if (Is.arrayValue(responseType.examples)) {
+						for (const example of responseType.examples) {
+							if (Is.object<IHttpResponse>(example.response)) {
+								if (Is.objectValue(example.response.headers)) {
+									headers ??= {};
+									const headersSchema = schemas[responseType.type].properties
+										?.headers as JSONSchema7;
+									for (const header in example.response.headers) {
+										const headerValue = example.response.headers[header];
+										const propertySchema = headersSchema.properties?.[header];
+										const schemaType = Is.object<JSONSchema7>(propertySchema)
+											? propertySchema?.type
+											: undefined;
+										headers[header] = {
+											schema: {
+												type: Is.string(schemaType) ? schemaType : "string"
+											},
+											description: `e.g. ${
+												Is.array(headerValue) ? headerValue.join(",") : headerValue
+											}`
 										};
 									}
 								}
+								if (!Is.undefined(example.response.body)) {
+									examples ??= {};
+									examples[example.id] = {
+										summary: example.description,
+										value: example.response.body
+									};
+								}
 							}
+						}
+					} else {
+						const statusExample = getHttpExampleFromType(responseType.type);
+						if (statusExample) {
+							examples = {};
+							examples.exampleResponse = {
+								value: statusExample
+							};
+						}
+					}
+
+					let mimeType: string;
+					let schemaType: string | undefined;
+					let schemaFormat: string | undefined;
+					let schemaRef: string | undefined;
+					let description: string | undefined = schemas[responseType.type]?.description;
+
+					if (Is.stringValue(responseType.mimeType)) {
+						mimeType = responseType.mimeType;
+					} else {
+						const hasBody = Is.notEmpty(schemas[responseType.type]?.properties?.body);
+						if (hasBody) {
+							mimeType = "application/json";
 						} else {
-							const statusExample = getHttpExampleFromType(r.type);
-							if (statusExample) {
-								examples = {};
-								examples.exampleResponse = {
-									value: statusExample
-								};
+							mimeType = "text/plain";
+						}
+					}
+
+					// Perform some special handling for binary octet-streams to produce a nicer spec output
+					if (responseType.type === nameof<Uint8Array>()) {
+						schemaType = "string";
+						schemaFormat = "binary";
+						schemaRef = undefined;
+						description = "Binary data";
+						if (Is.objectValue<IOpenApiExample>(examples)) {
+							const exampleKeys = Object.keys(examples);
+
+							const firstExample = examples[exampleKeys[0]];
+							description = firstExample.summary;
+							firstExample.summary = "Binary Data";
+
+							for (const exampleKey in examples) {
+								examples[exampleKey].value = "";
 							}
 						}
-
-						responses.push({
-							code: r.statusCode,
-							description: schemas[r.type]?.description,
-							content:
-								r.type === nameof<ICreatedResponse>() || r.type === nameof<INoContentResponse>()
-									? undefined
-									: {
-											"application/json": {
-												schema: {
-													$ref: `#/definitions/${r.type}`
-												},
-												examples
-											}
-										},
-							headers
-						});
+					} else {
+						schemaRef = `#/definitions/${responseType.type}`;
 					}
-					if (!usedCommonResponseTypes.includes(r.type)) {
-						usedCommonResponseTypes.push(r.type);
-					}
-				} else if (r.mimeType) {
-					const resp: { code: HttpStatusCode } & IOpenApiResponse = {
-						code: HttpStatusCode.ok,
-						description: r.description,
-						content: {}
-					};
 
-					resp.content ??= {};
-					resp.content[r.mimeType] = {
-						schema: {
-							type: "string",
-							format: r.mimeType === "application/octet-stream" ? "binary" : undefined
-						}
-					};
-
-					responses.push(resp);
+					responses.push({
+						code: responseType.statusCode,
+						description,
+						content:
+							responseType.type === nameof<ICreatedResponse>() ||
+							responseType.type === nameof<INoContentResponse>()
+								? undefined
+								: {
+										[mimeType]: {
+											schema: {
+												$ref: schemaRef,
+												type: schemaType,
+												format: schemaFormat
+											},
+											examples
+										}
+									},
+						headers
+					});
+				}
+				if (!usedCommonResponseTypes.includes(responseType.type)) {
+					usedCommonResponseTypes.push(responseType.type);
 				}
 			}
 
@@ -398,7 +422,7 @@ export async function tsToOpenApi(
 				: undefined;
 
 			if (requestObject?.properties) {
-				// If there is a path object convert these to params
+				// If there is a path params object convert these to params
 				if (Is.object<JSONSchema7>(requestObject.properties.pathParams)) {
 					for (const pathParam of pathOrQueryParams) {
 						const prop = requestObject.properties.pathParams.properties?.[pathParam.name];
@@ -449,7 +473,7 @@ export async function tsToOpenApi(
 				if (fullPath.length === 0) {
 					fullPath = "/";
 				}
-				openApi.paths[fullPath] = openApi.paths[fullPath] ?? {};
+				openApi.paths[fullPath] ??= {};
 
 				const method = inputPath.method.toLowerCase();
 				openApi.paths[fullPath][method] = {
@@ -472,20 +496,8 @@ export async function tsToOpenApi(
 							: undefined
 				};
 
-				if (authSecurity.length > 0) {
+				if (pathSpecificAuthSecurity.length > 0) {
 					openApi.paths[fullPath][method].security = pathSpecificAuthSecurity;
-				}
-
-				if (responses.length > 0) {
-					const openApiResponses: { [code: string]: IOpenApiResponse } = {};
-					for (const response of responses) {
-						const code = response.code;
-						if (code) {
-							delete response.code;
-							openApiResponses[code as number] = response;
-						}
-					}
-					openApi.paths[fullPath][method].responses = openApiResponses;
 				}
 
 				if (requestObject && inputPath.requestType) {
@@ -504,11 +516,24 @@ export async function tsToOpenApi(
 							}
 						}
 					}
+
+					let requestMimeType: string;
+					if (Is.stringValue(inputPath.requestMimeType)) {
+						requestMimeType = inputPath.requestMimeType;
+					} else {
+						const hasBody = Is.notEmpty(schemas[inputPath.requestType]?.properties?.body);
+						if (hasBody) {
+							requestMimeType = "application/json";
+						} else {
+							requestMimeType = "text/plain";
+						}
+					}
+
 					openApi.paths[fullPath][method].requestBody = {
 						description: requestObject.description,
 						required: true,
 						content: {
-							"application/json": {
+							[requestMimeType]: {
 								schema: {
 									$ref: `#/definitions/${inputPath.requestType}`
 								},
@@ -516,6 +541,18 @@ export async function tsToOpenApi(
 							}
 						}
 					};
+				}
+
+				if (responses.length > 0) {
+					const openApiResponses: { [code: string]: IOpenApiResponse } = {};
+					for (const response of responses) {
+						const code = response.code;
+						if (code) {
+							delete response.code;
+							openApiResponses[code as number] = response;
+						}
+					}
+					openApi.paths[fullPath][method].responses = openApiResponses;
 				}
 			}
 		}
@@ -725,7 +762,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 
 		const responseType: {
 			statusCode: HttpStatusCode;
-			type?: string;
+			type: string;
 			mimeType?: string;
 			description?: string;
 			examples?: {
@@ -734,16 +771,6 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 				response: unknown;
 			}[];
 		}[] = [];
-
-		if (route.responseContentType) {
-			for (const contentType of route.responseContentType) {
-				responseType.push({
-					statusCode: HttpStatusCode.ok,
-					description: contentType.description,
-					mimeType: contentType.mimeType
-				});
-			}
-		}
 
 		// If there is no response type automatically add a success
 		if (Is.empty(route.responseType)) {
@@ -760,6 +787,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 				const responseCode = getHttpStatusCodeFromType(rt.type);
 				responseType.push({
 					...rt,
+					mimeType: rt.mimeType,
 					statusCode: responseCode,
 					examples: rt.examples
 				});
@@ -774,6 +802,7 @@ async function processPackageRestDetails(restRoutes: IRestRoute[]): Promise<IInp
 			tag: route.tag,
 			summary: route.summary,
 			requestType: route.requestType?.type,
+			requestMimeType: route.requestType?.mimeType,
 			requestExamples: route.requestType?.examples,
 			responseType,
 			responseCodes: ["badRequest", "internalServerError"],

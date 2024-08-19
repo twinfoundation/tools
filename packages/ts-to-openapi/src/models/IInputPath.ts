@@ -42,6 +42,11 @@ export interface IInputPath {
 	requestType?: string;
 
 	/**
+	 * The request mime type.
+	 */
+	requestMimeType?: string;
+
+	/**
 	 * Example objects for the request.
 	 */
 	requestExamples?: {
@@ -55,7 +60,7 @@ export interface IInputPath {
 	 */
 	responseType: {
 		statusCode: HttpStatusCode;
-		type?: string;
+		type: string;
 		mimeType?: string;
 		description?: string;
 		examples?: {
