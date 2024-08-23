@@ -389,11 +389,11 @@ export async function tsToOpenApi(
 				}
 			}
 
-			const pathOrQueryParams: {
+			const pathQueryHeaderParams: {
 				name: string;
 				description?: string;
 				required: boolean;
-				in: "path" | "query";
+				in: "path" | "query" | "header";
 				type: string;
 				style?: string;
 				example?: unknown;
@@ -410,7 +410,7 @@ export async function tsToOpenApi(
 				?.request as IHttpRequest;
 
 			if (Is.object(requestExample?.pathParams)) {
-				for (const pathOrQueryParam of pathOrQueryParams) {
+				for (const pathOrQueryParam of pathQueryHeaderParams) {
 					if (requestExample.pathParams[pathOrQueryParam.name]) {
 						pathOrQueryParam.example = requestExample.pathParams[pathOrQueryParam.name];
 					}
@@ -422,9 +422,20 @@ export async function tsToOpenApi(
 				: undefined;
 
 			if (requestObject?.properties) {
+				// If there are any properties other than body, query, pathParams and headers
+				// we should throw an error as we don't know what to do with them
+				const otherKeys = Object.keys(requestObject.properties).filter(
+					k => !["body", "query", "pathParams", "headers"].includes(k)
+				);
+				if (otherKeys.length > 0) {
+					throw new GeneralError("commands", "commands.ts-to-openapi.unsupportedProperties", {
+						keys: otherKeys.join(", ")
+					});
+				}
+
 				// If there is a path params object convert these to params
 				if (Is.object<JSONSchema7>(requestObject.properties.pathParams)) {
-					for (const pathParam of pathOrQueryParams) {
+					for (const pathParam of pathQueryHeaderParams) {
 						const prop = requestObject.properties.pathParams.properties?.[pathParam.name];
 						if (Is.object<JSONSchema7>(prop)) {
 							pathParam.description = prop.description ?? pathParam.description;
@@ -446,7 +457,7 @@ export async function tsToOpenApi(
 								example = requestExample.query[prop];
 							}
 
-							pathOrQueryParams.push({
+							pathQueryHeaderParams.push({
 								name: prop,
 								description: queryProp.description,
 								required: Boolean(requestObject.required?.includes(prop)),
@@ -458,6 +469,32 @@ export async function tsToOpenApi(
 						}
 					}
 					delete requestObject.properties.query;
+				}
+
+				// If there are headers in the object convert these to spec params
+				if (Is.object<JSONSchema7>(requestObject.properties.headers)) {
+					const headerProperties = requestObject.properties.headers.properties;
+
+					for (const prop in headerProperties) {
+						const headerSchema = headerProperties[prop];
+						if (Is.object<JSONSchema7>(headerSchema)) {
+							let example: unknown;
+							if (Is.object(requestExample.headers) && requestExample.headers[prop]) {
+								example = requestExample.headers[prop];
+							}
+
+							pathQueryHeaderParams.push({
+								name: prop,
+								description: headerSchema.description,
+								required: true,
+								type: "string",
+								in: "header",
+								style: "simple",
+								example
+							});
+						}
+					}
+					delete requestObject.properties.headers;
 				}
 
 				// If we have used all the properties from the object in the
@@ -481,8 +518,8 @@ export async function tsToOpenApi(
 					summary: inputPath.summary,
 					tags: [inputPath.tag],
 					parameters:
-						pathOrQueryParams.length > 0
-							? pathOrQueryParams.map(p => ({
+						pathQueryHeaderParams.length > 0
+							? pathQueryHeaderParams.map(p => ({
 									name: p.name,
 									description: p.description,
 									in: p.in,

@@ -4,7 +4,8 @@
 			"ts-to-openapi": {
 				"configFailed": "Configuration failed to load.",
 				"missingRestRoutesEntryPoints": "Missing REST routes method \"{method}\" in package \"{package}\".",
-				"missingRestRoutesEntryPoint": "Missing REST routes entryPoint \"{entryPoint}\" in package \"{package}\"."
+				"missingRestRoutesEntryPoint": "Missing REST routes entryPoint \"{entryPoint}\" in package \"{package}\".",
+				"unsupportedProperties": "Unsupported properties found in the request object \"{keys}\"."
 			}
 		}
 	},
