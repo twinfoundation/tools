@@ -18,7 +18,7 @@ import { GeneralError, I18n, Is, StringHelper } from "@gtsc/core";
 import { nameof } from "@gtsc/nameof";
 import { HttpStatusCode } from "@gtsc/web";
 import type { Command } from "commander";
-import type { JSONSchema7 } from "json-schema";
+import type { JSONSchema7, JSONSchema7TypeName, JSONSchema7Type } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
 import {
 	HTTP_STATUS_CODE_MAP,
@@ -394,14 +394,20 @@ export async function tsToOpenApi(
 				description?: string;
 				required: boolean;
 				in: "path" | "query" | "header";
-				type: string;
+				schema: {
+					type?: JSONSchema7TypeName | JSONSchema7TypeName[];
+					enum?: JSONSchema7Type[];
+					$ref?: string;
+				};
 				style?: string;
 				example?: unknown;
 			}[] = inputPath.pathParameters.map(p => ({
 				name: p,
 				description: "",
 				required: true,
-				type: "string",
+				schema: {
+					type: "string"
+				},
 				in: "path",
 				style: "simple"
 			}));
@@ -439,7 +445,11 @@ export async function tsToOpenApi(
 						const prop = requestObject.properties.pathParams.properties?.[pathParam.name];
 						if (Is.object<JSONSchema7>(prop)) {
 							pathParam.description = prop.description ?? pathParam.description;
-							pathParam.type = (prop.type as string) ?? pathParam.type;
+							pathParam.schema = {
+								type: prop.type,
+								enum: prop.enum,
+								$ref: prop.$ref
+							};
 							pathParam.required = true;
 							delete requestObject.properties.pathParams.properties?.[pathParam.name];
 						}
@@ -461,7 +471,11 @@ export async function tsToOpenApi(
 								name: prop,
 								description: queryProp.description,
 								required: Boolean(requestObject.required?.includes(prop)),
-								type: queryProp.type as string,
+								schema: {
+									type: queryProp.type,
+									enum: queryProp.enum,
+									$ref: queryProp.$ref
+								},
 								in: "query",
 								example
 							});
@@ -487,7 +501,9 @@ export async function tsToOpenApi(
 								name: prop,
 								description: headerSchema.description,
 								required: true,
-								type: "string",
+								schema: {
+									type: "string"
+								},
 								in: "header",
 								style: "simple",
 								example
@@ -524,9 +540,7 @@ export async function tsToOpenApi(
 									description: p.description,
 									in: p.in,
 									required: p.required,
-									schema: {
-										type: p.type
-									},
+									schema: p.schema,
 									style: p.style,
 									example: p.example
 								}))
