@@ -978,12 +978,17 @@ function extractTypesFromSchema(
 		} else {
 			extractTypesFromSchema(allTypes, schema.items, output);
 		}
-	} else if (Is.object(schema.properties)) {
-		for (const prop in schema.properties) {
-			const p = schema.properties[prop];
-			if (Is.object<JSONSchema7>(p)) {
-				extractTypesFromSchema(allTypes, p, output);
+	} else if (Is.object(schema.properties) || Is.object(schema.additionalProperties)) {
+		if (Is.object(schema.properties)) {
+			for (const prop in schema.properties) {
+				const p = schema.properties[prop];
+				if (Is.object<JSONSchema7>(p)) {
+					extractTypesFromSchema(allTypes, p, output);
+				}
 			}
+		}
+		if (Is.object(schema.additionalProperties)) {
+			extractTypesFromSchema(allTypes, schema.additionalProperties, output);
 		}
 	} else if (Is.arrayValue(schema.anyOf)) {
 		for (const prop of schema.anyOf) {
