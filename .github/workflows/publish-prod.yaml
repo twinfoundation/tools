@@ -12,6 +12,7 @@ on:
           - nameof-transformer
           - merge-locales
           - ts-to-openapi
+          - ts-to-schema
 
 jobs:
   publish:

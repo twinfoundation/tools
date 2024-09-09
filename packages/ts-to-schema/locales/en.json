@@ -1,0 +1,39 @@
+{
+	"error": {
+		"commands": {
+			"ts-to-schema": {
+				"configFailed": "Configuration failed to load.",
+				"schemaNotFound": "Could not find the requested schema in the generated types \"{type}\"."
+			}
+		}
+	},
+	"commands": {
+		"ts-to-schema": {
+			"options": {
+				"config": {
+					"param": "'<'config'>'",
+					"description": "Path to the JSON configuration file."
+				},
+				"output-folder": {
+					"param": "'<'output-folder'>'",
+					"description": "The folder to write the schema files."
+				}
+			},
+			"progress": {
+				"loadingConfigJson": "Loading Config JSON",
+				"creatingWorkingDir": "Creating Working Directory",
+				"generatingSchemas": "Generating Schemas",
+				"finalisingSchemas": "Finalising Schemas",
+				"writingSchemas": "Writing Schemas",
+				"writingSchema": "Writing Schema",
+				"models": "Models",
+				"leftOverSchemas": "Leftover Schemas"
+			},
+			"labels": {
+				"configJson": "Config JSON",
+				"outputFolder": "Output Folder",
+				"outputWorkingDir": "Output Working Directory"
+			}
+		}
+	}
+}

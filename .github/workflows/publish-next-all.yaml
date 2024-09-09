@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        package: [nameof-transformer, nameof, merge-locales, ts-to-openapi]
+        package: [nameof-transformer, nameof, merge-locales, ts-to-openapi, ts-to-schema]
 
     steps:
       - name: Checkout

@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CLIBase } from "@gtsc/cli-core";
 import type { Command } from "commander";
-import { buildCommandTsToOpenApi } from "./commands/tsToOpenApi";
+import { buildCommandTsToSchema } from "./commands/tsToSchema";
 
 /**
  * The main entry point for the CLI.
@@ -19,8 +19,8 @@ export class CLI extends CLIBase {
 	public async run(argv: string[], localesDirectory?: string): Promise<number> {
 		return this.execute(
 			{
-				title: "GTSC TypeScript To OpenAPI",
-				appName: "ts-to-openapi",
+				title: "GTSC TypeScript To Schema",
+				appName: "ts-to-schema",
 				version: "0.0.5-next.7",
 				icon: "⚙️ ",
 				supportsEnvFiles: false
@@ -35,6 +35,6 @@ export class CLI extends CLIBase {
 	 * @param program The root program command.
 	 */
 	protected configureRoot(program: Command): void {
-		buildCommandTsToOpenApi(program);
+		buildCommandTsToSchema(program);
 	}
 }
