@@ -14,9 +14,9 @@ import type {
 	IUnauthorizedResponse
 } from "@gtsc/api-models";
 import { CLIDisplay, CLIUtils } from "@gtsc/cli-core";
-import { GeneralError, I18n, Is, StringHelper } from "@gtsc/core";
+import { GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@gtsc/core";
 import { nameof } from "@gtsc/nameof";
-import { HttpStatusCode } from "@gtsc/web";
+import { HttpStatusCode, MimeTypes } from "@gtsc/web";
 import type { Command } from "commander";
 import type { JSONSchema7, JSONSchema7TypeName, JSONSchema7Type } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
@@ -295,9 +295,9 @@ export async function tsToOpenApi(
 					} else {
 						const hasBody = Is.notEmpty(schemas[responseType.type]?.properties?.body);
 						if (hasBody) {
-							mimeType = "application/json";
+							mimeType = MimeTypes.Json;
 						} else {
-							mimeType = "text/plain";
+							mimeType = MimeTypes.PlainText;
 						}
 					}
 
@@ -372,7 +372,7 @@ export async function tsToOpenApi(
 								code: responseCodeDetails.code,
 								description: schemas[responseCodeDetails.responseType].description,
 								content: {
-									"application/json": {
+									[MimeTypes.Json]: {
 										schema: {
 											$ref: `#/definitions/${responseCodeDetails.responseType}`
 										},
@@ -574,9 +574,9 @@ export async function tsToOpenApi(
 					} else {
 						const hasBody = Is.notEmpty(schemas[inputPath.requestType]?.properties?.body);
 						if (hasBody) {
-							requestMimeType = "application/json";
+							requestMimeType = MimeTypes.Json;
 						} else {
-							requestMimeType = "text/plain";
+							requestMimeType = MimeTypes.PlainText;
 						}
 					}
 
@@ -600,7 +600,8 @@ export async function tsToOpenApi(
 						const code = response.code;
 						if (code) {
 							delete response.code;
-							openApiResponses[code as number] = response;
+							openApiResponses[code] ??= {};
+							openApiResponses[code] = ObjectHelper.merge(openApiResponses[code], response);
 						}
 					}
 					openApi.paths[fullPath][method].responses = openApiResponses;
