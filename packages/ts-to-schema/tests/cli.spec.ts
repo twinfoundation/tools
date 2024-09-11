@@ -53,7 +53,7 @@ describe("CLI", () => {
 	test("Can run with command line arguments and valid config", async () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
-			baseUrl: "https://schema.gtsc.io/v2/",
+			baseUrl: "https://schema.gtsc.io/my-namespace/",
 			sources: ["./tests/dist/**/*.d.ts"],
 			types: [
 				"IJsonLdDocument",
@@ -92,7 +92,7 @@ describe("CLI", () => {
 	test("Can run with command line arguments and valid config with external linked", async () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
-			baseUrl: "https://schema.gtsc.io/v2/",
+			baseUrl: "https://schema.gtsc.io/my-namespace/",
 			sources: ["./tests/dist/**/*.d.ts"],
 			types: ["IExternalElement"],
 			externalReferences: {

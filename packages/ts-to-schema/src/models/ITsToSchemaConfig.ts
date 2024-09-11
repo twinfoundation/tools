@@ -6,7 +6,7 @@
  */
 export interface ITsToSchemaConfig {
 	/**
-	 * The base url for the type references e.g. https://schema.gtsc.io/v2/.
+	 * The base url for the type references e.g. https://schema.gtsc.io/my-namespace/.
 	 */
 	baseUrl: string;
 

@@ -31,7 +31,7 @@ An example configuration file looks as follows:
 
 ```json
 {
-  "baseUrl": "https://schema.gtsc.io/v2/",
+  "baseUrl": "https://schema.gtsc.io/my-namespace/",
   "sourceFiles": ["./dist/types/*.d.ts"],
   "types": ["MyType1", "MyType2"]
 }
