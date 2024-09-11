@@ -711,6 +711,14 @@ async function finaliseOutput(
 		delete finalSchemas.HttpStatusCode;
 	}
 
+	const schemaKeys = Object.keys(finalSchemas);
+	schemaKeys.sort();
+
+	const sortedSchemas: { [id: string]: JSONSchema7 } = {};
+	for (const key of schemaKeys) {
+		sortedSchemas[key] = finalSchemas[key];
+	}
+
 	openApi.components = {
 		schemas: finalSchemas,
 		securitySchemes
@@ -732,15 +740,6 @@ async function finaliseOutput(
 		}
 	} while (performedSubstitution);
 
-	if (Is.objectValue(externalReferences)) {
-		for (const external in externalReferences) {
-			json = json.replace(
-				new RegExp(`#/definitions/${external}`, "g"),
-				externalReferences[external]
-			);
-		}
-	}
-
 	// Update the location of the components
 	json = json.replace(/#\/definitions\//g, "#/components/schemas/");
 
@@ -756,6 +755,16 @@ async function finaliseOutput(
 
 	// Cleanup the generic markers
 	json = json.replace(/%3Cunknown%3E/g, "");
+
+	// Remove external references
+	if (Is.objectValue(externalReferences)) {
+		for (const external in externalReferences) {
+			json = json.replace(
+				new RegExp(`#/components/schemas/${StringHelper.stripPrefix(external)}`, "g"),
+				externalReferences[external]
+			);
+		}
+	}
 
 	CLIDisplay.task(
 		I18n.formatMessage("commands.ts-to-openapi.progress.writingOutputFile"),
