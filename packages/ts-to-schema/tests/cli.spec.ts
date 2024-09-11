@@ -50,37 +50,54 @@ describe("CLI", () => {
 		expect(res).toEqual(1);
 	});
 
-	test("Can run with command line arguments and valid empty config", async () => {
+	test("Can run with command line arguments and valid config", async () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
 			baseUrl: "https://schema.gtsc.io/v2/",
 			sources: ["./tests/dist/**/*.d.ts"],
 			types: [
 				"IJsonLdDocument",
-				"INodeObject",
-				"IContextDefinition",
-				"IValueObject",
-				"INodeObject",
-				"Keyword",
-				"ContainerType",
-				"ContainerTypeArray",
-				"IJsonObject",
-				"JsonValue",
-				"JsonPrimitive",
-				"JsonArray",
-				"IIncludedBlock",
-				"ListOrSetItem",
-				"IExpandedTermDefinition",
-				"INodePrimitive",
-				"IGraphObject",
-				"IListObject",
-				"ISetObject",
-				"ILanguageMap",
-				"IIndexMap",
-				"IIndexMapItem",
-				"IIdMap",
-				"ITypeMap"
+				"IJsonLdNodeObject",
+				"IJsonLdContextDefinition",
+				"IJsonLdValueObject",
+				"IJsonLdNodeObject",
+				"IJsonLdKeyword",
+				"IJsonLdContainerType",
+				"IJsonLdContainerTypeArray",
+				"IJsonLdJsonObject",
+				"IJsonLdJsonValue",
+				"IJsonLdJsonPrimitive",
+				"IJsonLdJsonArray",
+				"IJsonLdIncludedBlock",
+				"IJsonLdListOrSetItem",
+				"IJsonLdExpandedTermDefinition",
+				"IJsonLdNodePrimitive",
+				"IJsonLdGraphObject",
+				"IJsonLdListObject",
+				"IJsonLdSetObject",
+				"IJsonLdLanguageMap",
+				"IJsonLdIndexMap",
+				"IJsonLdIndexMapItem",
+				"IJsonLdIdMap",
+				"IJsonLdTypeMap"
 			]
+		};
+
+		const configFile = path.join(TEST_CONFIG_LOCATION, "config.json");
+		await writeFile(configFile, JSON.stringify(config, undefined, "\t"));
+		const res = await cli.run(["node", "script", configFile, TEST_OUTPUT_FOLDER]);
+		expect(res).toEqual(0);
+	});
+
+	test("Can run with command line arguments and valid config with external linked", async () => {
+		const cli = new CLI();
+		const config: ITsToSchemaConfig = {
+			baseUrl: "https://schema.gtsc.io/v2/",
+			sources: ["./tests/dist/**/*.d.ts"],
+			types: ["IExternalElement"],
+			externalReferences: {
+				IJsonLdNodeObject: "https://example.com/IJsonLdDocument"
+			}
 		};
 
 		const configFile = path.join(TEST_CONFIG_LOCATION, "config.json");

@@ -16,7 +16,12 @@ export interface ITsToSchemaConfig {
 	sources: string[];
 
 	/**
-	 * The list of types to output.
+	 * The list of types to generate.
 	 */
 	types: string[];
+
+	/**
+	 * External type references
+	 */
+	externalReferences?: { [id: string]: string };
 }

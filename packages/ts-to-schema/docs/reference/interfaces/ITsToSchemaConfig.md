@@ -24,4 +24,16 @@ The list of glob sources that can be used to generate the schemas.
 
 > **types**: `string`[]
 
-The list of types to output.
+The list of types to generate.
+
+***
+
+### externalReferences?
+
+> `optional` **externalReferences**: `object`
+
+External type references
+
+#### Index signature
+
+ \[`id`: `string`\]: `string`

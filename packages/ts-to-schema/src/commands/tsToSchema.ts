@@ -120,6 +120,16 @@ export async function tsToSchema(
 			throw new GeneralError("commands", "commands.ts-to-schema.schemaNotFound", { type });
 		}
 		let content = JSON.stringify(schemas[type], undefined, "\t");
+
+		if (Is.objectValue(config.externalReferences)) {
+			for (const external in config.externalReferences) {
+				content = content.replace(
+					new RegExp(`#/definitions/${external}`, "g"),
+					config.externalReferences[external]
+				);
+			}
+		}
+
 		content = content.replace(/#\/definitions\/I?/g, config.baseUrl);
 
 		const filename = path.join(outputFolder, `${StringHelper.stripPrefix(type)}.json`);
@@ -129,15 +139,6 @@ export async function tsToSchema(
 			1
 		);
 		await writeFile(filename, content);
-	}
-
-	const remainingSchemas = Object.keys(schemas).filter(s => !config.types.includes(s));
-	if (remainingSchemas.length > 0) {
-		CLIDisplay.break();
-		CLIDisplay.value(
-			I18n.formatMessage("commands.ts-to-schema.progress.leftOverSchemas"),
-			remainingSchemas.join(", ")
-		);
 	}
 }
 

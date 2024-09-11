@@ -610,7 +610,14 @@ export async function tsToOpenApi(
 		}
 	}
 
-	await finaliseOutput(usedCommonResponseTypes, schemas, openApi, securitySchemes, outputFile);
+	await finaliseOutput(
+		usedCommonResponseTypes,
+		schemas,
+		openApi,
+		securitySchemes,
+		config.externalReferences,
+		outputFile
+	);
 }
 
 /**
@@ -619,6 +626,7 @@ export async function tsToOpenApi(
  * @param schemas The schemas.
  * @param openApi The OpenAPI spec.
  * @param securitySchemes The security schemes.
+ * @param externalReferences The external references.
  * @param outputFile The output file.
  */
 async function finaliseOutput(
@@ -626,6 +634,7 @@ async function finaliseOutput(
 	schemas: { [id: string]: JSONSchema7 },
 	openApi: IOpenApi,
 	securitySchemes: { [name: string]: IOpenApiSecurityScheme },
+	externalReferences: { [type: string]: string } | undefined,
 	outputFile: string
 ): Promise<void> {
 	CLIDisplay.break();
@@ -659,6 +668,16 @@ async function finaliseOutput(
 					schemas[schema] = props.body;
 				} else {
 					skipSchema = true;
+				}
+			}
+		}
+
+		// If the schema is external then remove it from the final schemas
+		if (Is.object(externalReferences)) {
+			for (const external in externalReferences) {
+				if (new RegExp(external).test(schema)) {
+					skipSchema = true;
+					break;
 				}
 			}
 		}
@@ -712,6 +731,15 @@ async function finaliseOutput(
 			}
 		}
 	} while (performedSubstitution);
+
+	if (Is.objectValue(externalReferences)) {
+		for (const external in externalReferences) {
+			json = json.replace(
+				new RegExp(`#/definitions/${external}`, "g"),
+				externalReferences[external]
+			);
+		}
+	}
 
 	// Update the location of the components
 	json = json.replace(/#\/definitions\//g, "#/components/schemas/");

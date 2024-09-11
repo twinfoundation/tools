@@ -65,4 +65,9 @@ export interface ITsToOpenApiConfig {
 		 */
 		entryPoints?: ITsToOpenApiConfigEntryPoint[];
 	}[];
+
+	/**
+	 * External type references
+	 */
+	externalReferences?: { [id: string]: string };
 }
