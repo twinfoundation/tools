@@ -1012,7 +1012,9 @@ function extractTypesFromSchema(
 	const additionalTypes = [];
 
 	if (Is.stringValue(schema.$ref)) {
-		additionalTypes.push(schema.$ref.replace("#/definitions/", ""));
+		additionalTypes.push(
+			schema.$ref.replace("#/definitions/", "").replace(/^Partial%3C(.*?)%3E/g, "$1")
+		);
 	} else if (Is.object<JSONSchema7>(schema.items)) {
 		if (Is.arrayValue<JSONSchema7>(schema.items)) {
 			for (const itemSchema of schema.items) {
@@ -1035,6 +1037,12 @@ function extractTypesFromSchema(
 		}
 	} else if (Is.arrayValue(schema.anyOf)) {
 		for (const prop of schema.anyOf) {
+			if (Is.object<JSONSchema7>(prop)) {
+				extractTypesFromSchema(allTypes, prop, output);
+			}
+		}
+	} else if (Is.arrayValue(schema.oneOf)) {
+		for (const prop of schema.oneOf) {
 			if (Is.object<JSONSchema7>(prop)) {
 				extractTypesFromSchema(allTypes, prop, output);
 			}
