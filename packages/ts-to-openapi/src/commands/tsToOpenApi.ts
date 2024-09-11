@@ -720,7 +720,7 @@ async function finaliseOutput(
 	}
 
 	openApi.components = {
-		schemas: finalSchemas,
+		schemas: sortedSchemas,
 		securitySchemes
 	};
 

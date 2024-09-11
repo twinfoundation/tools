@@ -21,7 +21,7 @@ export class CLI extends CLIBase {
 			{
 				title: "GTSC TypeScript To Schema",
 				appName: "ts-to-schema",
-				version: "0.0.5-next.12",
+				version: "0.0.5-next.13",
 				icon: "⚙️ ",
 				supportsEnvFiles: false
 			},
