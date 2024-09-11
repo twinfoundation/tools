@@ -10,7 +10,8 @@ import type {
 	INoContentResponse,
 	INotFoundResponse,
 	IOkResponse,
-	IUnauthorizedResponse
+	IUnauthorizedResponse,
+	IUnprocessableEntityResponse
 } from "@gtsc/api-models";
 import { nameof } from "@gtsc/nameof";
 import { HttpStatusCode } from "@gtsc/web";
@@ -95,6 +96,14 @@ export const HTTP_STATUS_CODE_MAP: {
 		responseType: nameof<IInternalServerErrorResponse>(),
 		example: {
 			name: "InternalServerError",
+			message: "component.error"
+		}
+	},
+	unprocessableEntity: {
+		code: HttpStatusCode.unprocessableEntity,
+		responseType: nameof<IUnprocessableEntityResponse>(),
+		example: {
+			name: "UnprocessableError",
 			message: "component.error"
 		}
 	}
