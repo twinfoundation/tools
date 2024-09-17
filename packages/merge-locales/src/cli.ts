@@ -21,7 +21,7 @@ export class CLI extends CLIBase {
 			{
 				title: "GTSC Merge Locales",
 				appName: "merge-locales",
-				version: "0.0.5-next.13",
+				version: "0.0.5-next.14",
 				icon: "⚙️ ",
 				supportsEnvFiles: false
 			},

@@ -675,7 +675,7 @@ async function finaliseOutput(
 		// If the schema is external then remove it from the final schemas
 		if (Is.object(externalReferences)) {
 			for (const external in externalReferences) {
-				if (new RegExp(external).test(schema)) {
+				if (new RegExp(`^${external}$`).test(schema)) {
 					skipSchema = true;
 					break;
 				}
