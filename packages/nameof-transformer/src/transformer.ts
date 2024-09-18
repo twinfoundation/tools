@@ -86,10 +86,10 @@ function visitNode(node: ts.Node): ts.Node {
 		}
 	} else if (
 		ts.isImportDeclaration(node) &&
-		node.moduleSpecifier.getText().includes("@gtsc/nameof")
+		node.moduleSpecifier.getText().includes("@twin.org/nameof")
 	) {
-		// Is this an import of @gtsc/nameof
-		// e.g. import { nameof } from "@gtsc/nameof";
+		// Is this an import of @twin.org/nameof
+		// e.g. import { nameof } from "@twin.org/nameof";
 		// if it is then return undefined to remove the node
 		return undefined as unknown as ts.Node;
 	}

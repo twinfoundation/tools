@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { CLIDisplay, CLIUtils } from "@gtsc/cli-core";
-import { GeneralError, I18n, Is, StringHelper } from "@gtsc/core";
+import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
+import { GeneralError, I18n, Is, StringHelper } from "@twin.org/core";
 import type { Command } from "commander";
 import type { JSONSchema7 } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";

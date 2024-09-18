@@ -1,4 +1,10 @@
-# @gtsc/nameof-transformer
+# @twin.org/nameof-transformer
+
+## References
+
+### default
+
+Renames and re-exports [factory](functions/factory.md)
 
 ## Variables
 
@@ -10,9 +16,3 @@
 - [factory](functions/factory.md)
 - [manual](functions/manual.md)
 - [tsTransformersPreProcess](functions/tsTransformersPreProcess.md)
-
-## References
-
-### default
-
-Renames and re-exports [factory](functions/factory.md)

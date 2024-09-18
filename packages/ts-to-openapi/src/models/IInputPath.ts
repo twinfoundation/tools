@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { HttpMethod, HttpStatusCode } from "@gtsc/web";
+import type { HttpMethod, HttpStatusCode } from "@twin.org/web";
 
 /**
  * The resulting details for a REST path.

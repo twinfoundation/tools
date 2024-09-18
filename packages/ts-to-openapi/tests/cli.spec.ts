@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { rm, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { CLIDisplay } from "@gtsc/cli-core";
+import { CLIDisplay } from "@twin.org/cli-core";
 import { CLI } from "../src/cli";
 import type { ITsToOpenApiConfig } from "../src/models/ITsToOpenApiConfig";
 
@@ -53,9 +53,9 @@ describe("CLI", () => {
 	test("Can run with command line arguments and valid empty config", async () => {
 		const cli = new CLI();
 		const config: ITsToOpenApiConfig = {
-			title: "Global Trade and Supply Chain - Test Endpoints",
+			title: "TWIN - Test Endpoints",
 			version: "1.0.0",
-			description: "REST API for Global Trade and Supply Chain - Test Endpoints.",
+			description: "REST API for TWIN - Test Endpoints.",
 			licenseName: "Apache 2.0 License",
 			licenseUrl: "https://opensource.org/licenses/Apache-2.0",
 			servers: ["https://localhost"],

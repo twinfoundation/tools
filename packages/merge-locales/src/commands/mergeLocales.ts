@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { CLIDisplay, CLIUtils } from "@gtsc/cli-core";
+import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
 import {
 	GeneralError,
 	I18n,
@@ -10,7 +10,7 @@ import {
 	ObjectHelper,
 	type ILocale,
 	type ILocaleDictionary
-} from "@gtsc/core";
+} from "@twin.org/core";
 import type { Command } from "commander";
 import type { IMergeLocalesConfig } from "../models/IMergeLocalesConfig";
 import type { IPackageJson } from "../models/IPackageJson";
@@ -111,9 +111,9 @@ export async function mergeLocales(
 		packageNames
 	);
 
-	excludePackages.push("@gtsc/merge-locales");
-	excludePackages.push("@gtsc/nameof");
-	excludePackages.push("@gtsc/nameof-transformer");
+	excludePackages.push("@twin.org/merge-locales");
+	excludePackages.push("@twin.org/nameof");
+	excludePackages.push("@twin.org/nameof-transformer");
 
 	packageNames = packageNames.filter(pkg => !excludePackages.includes(pkg));
 	packageNames.push(...includePackages);
@@ -219,7 +219,7 @@ async function findDependencies(
 
 	if (Is.objectValue(packageJson?.dependencies)) {
 		for (const pkg in packageJson.dependencies) {
-			if (pkg.startsWith("@gtsc") && !packageNames.includes(pkg)) {
+			if (pkg.startsWith("@twin.org") && !packageNames.includes(pkg)) {
 				packageNames.push(pkg);
 				const packagePath = path.join(npmRoot, pkg, "package.json");
 				await findDependencies(npmRoot, packagePath, packageNames);

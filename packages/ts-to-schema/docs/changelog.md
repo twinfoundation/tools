@@ -1,5 +1,5 @@
-# @gtsc/ts-to-schema - Changelog
+# @twin.org/ts-to-schema - Changelog
 
-## v0.0.4
+## v0.0.1-next.2
 
 - Initial Release

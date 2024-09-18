@@ -9,7 +9,7 @@
 export function manual(content: string): string {
 	if (content.includes("nameof")) {
 		// Remove the import
-		content = content.replace(/import.*from "@gtsc\/nameof";/g, "");
+		content = content.replace(/import.*from "@twin\.org\/nameof";/g, "");
 
 		// Replace the nameof<IMyObject>() with "IMyObject"
 		const nameRegEx = /nameof<(.*?)>\(\)/g;

@@ -1,11 +1,11 @@
-# @gtsc/ts-to-openapi - Examples
+# @twin.org/ts-to-openapi - Examples
 
 ## Command Line Tool
 
 First install the tool with the following script.
 
 ```shell
-npm install @gtsc/ts-to-openapi
+npm install @twin.org/ts-to-openapi
 ```
 
 You can then run the tool from the command line e.g.
@@ -31,20 +31,20 @@ An example configuration file looks as follows:
 
 ```json
 {
-  "title": "Global Trade and Supply Chain - Test Endpoints",
+  "title": "TWIN - Test Endpoints",
   "version": "1.0.0",
-  "description": "REST API for Global Trade and Supply Chain - Test Endpoints.",
+  "description": "REST API for TWIN - Test Endpoints.",
   "licenseName": "Apache 2.0 License",
   "licenseUrl": "https://opensource.org/licenses/Apache-2.0",
   "servers": ["https://localhost"],
   "authMethods": ["jwtBearer"],
   "restRoutes": [
     {
-      "package": "@gtsc/logging-service",
+      "package": "@twin.org/logging-service",
       "version": "next"
     },
     {
-      "package": "@gtsc/identity-service",
+      "package": "@twin.org/identity-service",
       "version": "next"
     }
   ]
@@ -67,7 +67,7 @@ Config JSON: config.json
 Output API JSON: output.json
 Loading Config JSON: config.json
 Creating security schemas
-Loading Modules: @gtsc/logging-service@next @gtsc/identity-service@next
+Loading Modules: @twin.org/logging-service@next @twin.org/identity-service@next
 
 added 43 packages, and audited 44 packages in 2s
 
@@ -76,10 +76,10 @@ added 43 packages, and audited 44 packages in 2s
 
 found 0 vulnerabilities
 
-Reading Package JSON: @gtsc/logging-service
-Importing Module: @gtsc/logging-service
-Reading Package JSON: @gtsc/identity-service
-Importing Module: @gtsc/identity-service
+Reading Package JSON: @twin.org/logging-service
+Importing Module: @twin.org/logging-service
+Reading Package JSON: @twin.org/identity-service
+Importing Module: @twin.org/identity-service
   Route loggingEntryCreate POST /logging/
   Route loggingListEntries GET /logging/
   Route identityCreate POST /identity/
@@ -88,29 +88,29 @@ Importing Module: @gtsc/identity-service
   Route identitiesList GET /identity/
 
 Generating Schemas
-Processing Models //work/node_modules/@gtsc/api-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/core/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/core/dist/types/errors/**/*.ts
-Processing Models //work/node_modules/@gtsc/entity/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/logging-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/services/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/web/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/web/dist/types/errors/**/*.ts
-Processing Models //work/node_modules/@gtsc/identity-service/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/api-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/core/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/core/dist/types/errors/**/*.ts
-Processing Models //work/node_modules/@gtsc/crypto/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/entity/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/entity-storage-connector-memory/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/entity-storage-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/identity-connector-entity-storage/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/identity-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/services/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/vault-connector-entity-storage/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/vault-models/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/web/dist/types/models/**/*.ts
-Processing Models //work/node_modules/@gtsc/web/dist/types/errors/**/*.ts
+Processing Models //work/node_modules/@twin.org/api-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/core/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/core/dist/types/errors/**/*.ts
+Processing Models //work/node_modules/@twin.org/entity/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/logging-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/services/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/web/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/web/dist/types/errors/**/*.ts
+Processing Models //work/node_modules/@twin.org/identity-service/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/api-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/core/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/core/dist/types/errors/**/*.ts
+Processing Models //work/node_modules/@twin.org/crypto/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/entity/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/entity-storage-connector-memory/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/entity-storage-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/identity-connector-entity-storage/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/identity-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/services/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/vault-connector-entity-storage/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/vault-models/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/web/dist/types/models/**/*.ts
+Processing Models //work/node_modules/@twin.org/web/dist/types/errors/**/*.ts
 
 Finalising Schemas
 Writing Output: output.json
@@ -122,8 +122,8 @@ The generated `output.json` should be:
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Global Trade and Supply Chain - Test Endpoints",
-    "description": "REST API for Global Trade and Supply Chain - Test Endpoints.",
+    "title": "TWIN - Test Endpoints",
+    "description": "REST API for TWIN - Test Endpoints.",
     "version": "1.0.0",
     "license": {
       "name": "Apache 2.0 License",
@@ -324,7 +324,7 @@ The generated `output.json` should be:
                 "schema": {
                   "type": "string"
                 },
-                "description": "e.g. did:gtsc:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
+                "description": "e.g. did:twin:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
               }
             }
           }
@@ -419,7 +419,7 @@ The generated `output.json` should be:
                     "value": {
                       "identities": [
                         {
-                          "identity": "did:gtsc:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+                          "identity": "did:twin:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
                           "properties": [
                             {
                               "key": "email",
@@ -456,7 +456,7 @@ The generated `output.json` should be:
               "type": "string"
             },
             "style": "simple",
-            "example": "did:gtsc:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
+            "example": "did:twin:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
           }
         ],
         "security": [
@@ -520,7 +520,7 @@ The generated `output.json` should be:
               "type": "string"
             },
             "style": "simple",
-            "example": "did:gtsc:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
+            "example": "did:twin:0xc57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70"
           },
           {
             "name": "propertyNames",
@@ -852,23 +852,23 @@ You can also use the package programatically as follows:
 
 ```typescript
 import { rm, mkdir } from 'node:fs/promises';
-import { CLI, type ITsToOpenApiConfig } from '@gtsc/ts-to-openapi';
+import { CLI, type ITsToOpenApiConfig } from '@twin.org/ts-to-openapi';
 
 const config: ITsToOpenApiConfig = {
-  title: 'Global Trade and Supply Chain - Test Endpoints',
+  title: 'TWIN - Test Endpoints',
   version: '1.0.0',
-  description: 'REST API for Global Trade and Supply Chain - Test Endpoints.',
+  description: 'REST API for TWIN - Test Endpoints.',
   licenseName: 'Apache 2.0 License',
   licenseUrl: 'https://opensource.org/licenses/Apache-2.0',
   servers: ['https://localhost'],
   authMethods: ['jwtBearer'],
   restRoutes: [
     {
-      package: '@gtsc/logging-service',
+      package: '@twin.org/logging-service',
       version: 'next'
     },
     {
-      package: '@gtsc/identity-service',
+      package: '@twin.org/identity-service',
       version: 'next'
     }
   ]

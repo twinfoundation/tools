@@ -74,6 +74,6 @@ The packages containing routes.
 
 External type references
 
-#### Index signature
+#### Index Signature
 
  \[`id`: `string`\]: `string`

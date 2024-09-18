@@ -1,4 +1,4 @@
-# @gtsc/merge-locales
+# @twin.org/merge-locales
 
 ## Classes
 

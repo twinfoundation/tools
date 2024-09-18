@@ -1,4 +1,4 @@
-# @gtsc/nameof
+# @twin.org/nameof
 
 ## Functions
 

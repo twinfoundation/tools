@@ -12,11 +12,11 @@ import type {
 	IRestRouteEntryPoint,
 	ITag,
 	IUnauthorizedResponse
-} from "@gtsc/api-models";
-import { CLIDisplay, CLIUtils } from "@gtsc/cli-core";
-import { GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@gtsc/core";
-import { nameof } from "@gtsc/nameof";
-import { HttpStatusCode, MimeTypes } from "@gtsc/web";
+} from "@twin.org/api-models";
+import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
+import { GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@twin.org/core";
+import { nameof } from "@twin.org/nameof";
+import { HttpStatusCode, MimeTypes } from "@twin.org/web";
 import type { Command } from "commander";
 import type { JSONSchema7, JSONSchema7TypeName, JSONSchema7Type } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
@@ -1194,7 +1194,7 @@ async function loadPackages(
 		if (pkgJson.dependencies) {
 			const nodeModulesFolder = await CLIUtils.findNpmRoot(npmResolveFolder);
 			for (const dep in pkgJson.dependencies) {
-				if (dep.startsWith("@gtsc")) {
+				if (dep.startsWith("@twin.org")) {
 					for (const typeFolder of typeFolders) {
 						const typesDirDep = path.join(nodeModulesFolder, dep, "dist", "types", typeFolder);
 						if (await CLIUtils.dirExists(typesDirDep)) {

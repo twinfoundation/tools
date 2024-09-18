@@ -1,4 +1,4 @@
-# @gtsc/ts-to-schema
+# @twin.org/ts-to-schema
 
 ## Classes
 
