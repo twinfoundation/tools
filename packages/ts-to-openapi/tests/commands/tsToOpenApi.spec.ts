@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { mkdir, rm } from "node:fs/promises";
 import path from "node:path";
-import { CLIDisplay } from "@gtsc/cli-core";
-import { I18n } from "@gtsc/core";
+import { CLIDisplay } from "@twin.org/cli-core";
+import { I18n } from "@twin.org/core";
 import { tsToOpenApi } from "../../src/commands/tsToOpenApi";
 import type { ITsToOpenApiConfig } from "../../src/models/ITsToOpenApiConfig";
 
@@ -43,19 +43,14 @@ describe("TSToOpenApi", () => {
 
 	test("Can run using process directly valid config", async () => {
 		const config: ITsToOpenApiConfig = {
-			title: "Global Trade and Supply Chain - Test Endpoints",
+			title: "TWIN - Test Endpoints",
 			version: "1.0.0",
-			description: "REST API for Global Trade and Supply Chain - Test Endpoints.",
+			description: "REST API for TWIN - Test Endpoints.",
 			licenseName: "Apache 2.0 License",
 			licenseUrl: "https://opensource.org/licenses/Apache-2.0",
 			servers: ["https://localhost"],
 			authMethods: ["jwtBearer"],
-			restRoutes: [
-				{
-					package: "@gtsc/api-service",
-					version: "next"
-				}
-			]
+			restRoutes: []
 		};
 
 		const res = await tsToOpenApi(config, TEST_OUTPUT_FILE2, TEST_WORKING_LOCATION);

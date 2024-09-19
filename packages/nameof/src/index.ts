@@ -9,5 +9,5 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function nameof<T>(property?: unknown, replaceParent?: string): string {
-	return "@gtsc/nameof-transformer is not in the build pipeline, you need to use a compiler that supports transformer plugins.";
+	return "@twin.org/nameof-transformer is not in the build pipeline, you need to use a compiler that supports transformer plugins.";
 }

@@ -1,4 +1,4 @@
-# @gtsc/ts-to-openapi
+# @twin.org/ts-to-openapi
 
 ## Classes
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { rm, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { CLIDisplay } from "@gtsc/cli-core";
+import { CLIDisplay } from "@twin.org/cli-core";
 import { CLI } from "../src/cli";
 import type { ITsToSchemaConfig } from "../src/models/ITsToSchemaConfig";
 
@@ -53,7 +53,7 @@ describe("CLI", () => {
 	test("Can run with command line arguments and valid config", async () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
-			baseUrl: "https://schema.gtsc.io/my-namespace/",
+			baseUrl: "https://schema.twindev.org/my-namespace/",
 			sources: ["./tests/dist/**/*.d.ts"],
 			types: [
 				"IJsonLdDocument",
@@ -92,7 +92,7 @@ describe("CLI", () => {
 	test("Can run with command line arguments and valid config with external linked", async () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
-			baseUrl: "https://schema.gtsc.io/my-namespace/",
+			baseUrl: "https://schema.twindev.org/my-namespace/",
 			sources: ["./tests/dist/**/*.d.ts"],
 			types: ["IExternalElement"],
 			externalReferences: {

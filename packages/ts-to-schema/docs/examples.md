@@ -1,11 +1,11 @@
-# @gtsc/ts-to-schema - Examples
+# @twin.org/ts-to-schema - Examples
 
 ## Command Line Tool
 
 First install the tool with the following script.
 
 ```shell
-npm install @gtsc/ts-to-schema
+npm install @twin.org/ts-to-schema
 ```
 
 You can then run the tool from the command line e.g.
@@ -31,7 +31,7 @@ An example configuration file looks as follows:
 
 ```json
 {
-  "baseUrl": "https://schema.gtsc.io/my-namespace/",
+  "baseUrl": "https://schema.twindev.org/my-namespace/",
   "sourceFiles": ["./dist/types/*.d.ts"],
   "types": ["MyType1", "MyType2"]
 }

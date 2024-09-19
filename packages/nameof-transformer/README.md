@@ -1,4 +1,4 @@
-# GTSC Nameof TypeScript Transformer
+# TWIN Nameof TypeScript Transformer
 
 This transformer is used to convert class/type/property names to embedded strings, so that they are available to the code at runtime.
 
@@ -6,12 +6,12 @@ It is used during your TypeScript compilation as part of the build pipeline.
 
 It is necessary that your code is built with a compiler that supports transformers such as `ts-patch` / `ttypescript` / `ttsc`.
 
-You will also need to include the `@gtsc/nameof` to be able to reference the methods in your code.
+You will also need to include the `@twin.org/nameof` to be able to reference the methods in your code.
 
 ## Installation
 
 ```shell
-npm install @gtsc/nameof-transformer -D
+npm install @twin.org/nameof-transformer -D
 ```
 
 ## Configuration
@@ -20,7 +20,7 @@ Configuration of the package is shown in [docs/configuration.md](docs/configurat
 
 ## Reference
 
-Detailed reference documentation for the API can be found in [docs/reference/globals.md](docs/reference/globals.md)
+Detailed reference documentation for the API can be found in [docs/reference/index.md](docs/reference/index.md)
 
 ## Changelog
 

@@ -12,9 +12,9 @@ import type {
 	IOkResponse,
 	IUnauthorizedResponse,
 	IUnprocessableEntityResponse
-} from "@gtsc/api-models";
-import { nameof } from "@gtsc/nameof";
-import { HttpStatusCode } from "@gtsc/web";
+} from "@twin.org/api-models";
+import { nameof } from "@twin.org/nameof";
+import { HttpStatusCode } from "@twin.org/web";
 
 export const HTTP_STATUS_CODE_MAP: {
 	[id: string]: {

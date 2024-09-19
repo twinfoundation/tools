@@ -4,7 +4,7 @@
 
 Placeholder method which substitutes the type name as a string at runtime.
 
-## Type parameters
+## Type Parameters
 
 • **T**
 

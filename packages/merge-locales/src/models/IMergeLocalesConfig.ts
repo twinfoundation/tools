@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { ILocale } from "@gtsc/core";
+import type { ILocale } from "@twin.org/core";
 
 /**
  * Configuration for the CLI.

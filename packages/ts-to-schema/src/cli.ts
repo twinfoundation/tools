@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLIBase } from "@gtsc/cli-core";
+import { CLIBase } from "@twin.org/cli-core";
 import type { Command } from "commander";
 import { buildCommandTsToSchema } from "./commands/tsToSchema";
 
@@ -19,9 +19,9 @@ export class CLI extends CLIBase {
 	public async run(argv: string[], localesDirectory?: string): Promise<number> {
 		return this.execute(
 			{
-				title: "GTSC TypeScript To Schema",
+				title: "TWIN TypeScript To Schema",
 				appName: "ts-to-schema",
-				version: "0.0.5-next.14",
+				version: "0.0.1-next.3",
 				icon: "⚙️ ",
 				supportsEnvFiles: false
 			},

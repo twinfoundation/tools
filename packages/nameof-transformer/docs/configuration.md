@@ -1,4 +1,4 @@
-# @gtsc/nameof-transformer - Configuration
+# @twin.org/nameof-transformer - Configuration
 
 The TypeScript compilation process reads the code from the .ts files and generates JavaScript .js from them.
 
@@ -29,7 +29,7 @@ Modify your `tsconfig.json` to use the transformer.
     "compilerOptions": {
         ...
         "plugins": [
-            { "transform": "@gtsc/nameof-transformer" }
+            { "transform": "@twin.org/nameof-transformer" }
         ]
     },
     ...

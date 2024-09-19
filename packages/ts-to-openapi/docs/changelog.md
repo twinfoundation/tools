@@ -1,5 +1,5 @@
-# @gtsc/ts-to-openapi - Changelog
+# @twin.org/ts-to-openapi - Changelog
 
-## v0.0.4
+## v0.0.1-next.3
 
 - Initial Release

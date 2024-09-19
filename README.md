@@ -1,6 +1,6 @@
-# GTSC Tools
+# TWIN Tools
 
-This mono-repository contains some of the tooling packages that the rest of the GTSC packages depend on.
+This mono-repository contains some of the tooling packages that the rest of the TWIN packages depend on.
 
 ## Packages
 

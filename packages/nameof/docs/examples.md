@@ -1,4 +1,4 @@
-# @gtsc/nameof - Examples
+# @twin.org/nameof - Examples
 
 ## `nameof<T>`
 
@@ -20,7 +20,7 @@ But if you changed the name of the class you would have to make sure you also re
 We can use the `nameof` transformer as follows.
 
 ```typescript
-import { nameof } from '@gtsc/nameof';
+import { nameof } from '@twin.org/nameof';
 
 export class MyClass {
   public static className(): string {
@@ -50,7 +50,7 @@ This means there is no additional overheads in function calls at runtime.
 The `nameof(propName)` transform behaves in much the same way as `nameof<T>`, but instead works on properties passed to it.
 
 ```typescript
-import { nameof } from '@gtsc/nameof';
+import { nameof } from '@twin.org/nameof';
 
 export class MyClass {
   public static propName(aProp: string): string {
@@ -63,7 +63,7 @@ console.log(MyClass.propName()); // Outputs "aProp"
 You can also used it with chained properties, nullish operators can also be used, but are removed.
 
 ```typescript
-import { nameof } from '@gtsc/nameof';
+import { nameof } from '@twin.org/nameof';
 
 export class MyClass {
   public static propName(aProp: { inner?: boolean }): string {
