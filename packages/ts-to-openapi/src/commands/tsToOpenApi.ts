@@ -679,7 +679,10 @@ async function finaliseOutput(
 				const re = new RegExp(`^I?${external}(?<!Request|Response)$`);
 				if (re.test(schema)) {
 					skipSchema = true;
-					finalExternals[StringHelper.stripPrefix(schema)] = schema.replace(re, externalReferences[external]);
+					finalExternals[StringHelper.stripPrefix(schema)] = schema.replace(
+						re,
+						externalReferences[external]
+					);
 					break;
 				}
 			}
