@@ -648,6 +648,7 @@ async function finaliseOutput(
 	}
 
 	const substituteSchemas: { from: string; to: string }[] = [];
+	const finalExternals: { [id: string]: string } = {};
 
 	// Remove the I, < and > from names
 	const finalSchemas: {
@@ -675,8 +676,10 @@ async function finaliseOutput(
 		// If the schema is external then remove it from the final schemas
 		if (Is.object(externalReferences)) {
 			for (const external in externalReferences) {
-				if (new RegExp(`^${external}$`).test(schema)) {
+				const re = new RegExp(`^I?${external}(?<!Request|Response)$`);
+				if (re.test(schema)) {
 					skipSchema = true;
+					finalExternals[StringHelper.stripPrefix(schema)] = schema.replace(re, externalReferences[external]);
 					break;
 				}
 			}
@@ -757,13 +760,11 @@ async function finaliseOutput(
 	json = json.replace(/%3Cunknown%3E/g, "");
 
 	// Remove external references
-	if (Is.objectValue(externalReferences)) {
-		for (const external in externalReferences) {
-			json = json.replace(
-				new RegExp(`#/components/schemas/${StringHelper.stripPrefix(external)}`, "g"),
-				externalReferences[external]
-			);
-		}
+	for (const finalExternal in finalExternals) {
+		json = json.replace(
+			new RegExp(`"#/components/schemas/${StringHelper.stripPrefix(finalExternal)}"`, "g"),
+			`"${finalExternals[finalExternal]}"`
+		);
 	}
 
 	CLIDisplay.task(
