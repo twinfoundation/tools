@@ -40,13 +40,15 @@ describe("CLI", () => {
 
 	test("Can fail to run with no command line arguments", async () => {
 		const cli = new CLI();
-		const res = await cli.run([]);
+		const res = await cli.run([], undefined, { overrideOutputWidth: 1000 });
 		expect(res).toEqual(1);
 	});
 
 	test("Can fail to run with 3 command line arguments and invalid config", async () => {
 		const cli = new CLI();
-		const res = await cli.run(["node", "script", "config"]);
+		const res = await cli.run(["node", "script", "config"], undefined, {
+			overrideOutputWidth: 1000
+		});
 		expect(res).toEqual(1);
 	});
 
@@ -65,7 +67,9 @@ describe("CLI", () => {
 
 		const configFile = path.join(TEST_CONFIG_LOCATION, "config.json");
 		await writeFile(configFile, JSON.stringify(config, undefined, "\t"));
-		const res = await cli.run(["node", "script", configFile, TEST_OUTPUT_FILE]);
+		const res = await cli.run(["node", "script", configFile, TEST_OUTPUT_FILE], undefined, {
+			overrideOutputWidth: 1000
+		});
 		expect(res).toEqual(0);
 	});
 });
