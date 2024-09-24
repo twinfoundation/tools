@@ -11,7 +11,9 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"sourceMap": true,
-		"sourceRoot": "./src"
+		"sourceRoot": "./src",
+		"types": [],
+		"skipLibCheck": true
 	},
 	"include": ["src/**/*.ts"]
 }
