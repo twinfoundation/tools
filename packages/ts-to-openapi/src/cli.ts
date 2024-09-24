@@ -27,7 +27,7 @@ export class CLI extends CLIBase {
 			{
 				title: "TWIN TypeScript To OpenAPI",
 				appName: "ts-to-openapi",
-				version: "0.0.1-next.6",
+				version: "0.0.1-next.7",
 				icon: "⚙️ ",
 				supportsEnvFiles: false,
 				overrideOutputWidth: options?.overrideOutputWidth
