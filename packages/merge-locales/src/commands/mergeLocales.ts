@@ -127,6 +127,12 @@ export async function mergeLocales(
 
 	const localeDictionaries: { [locale: string]: ILocaleDictionary } = {};
 
+	for (const packageName of packageNames) {
+		const packageLocalDirectory = path.join(npmRoot, packageName, "locales");
+		await mergePackageLocales(packageLocalDirectory, packageName, locales, localeDictionaries);
+	}
+
+	// Merge the main package last so that it can override any other packages.
 	if (Is.stringValue(packageJson.name)) {
 		await mergePackageLocales(
 			path.join(workingDirectory, "locales"),
@@ -134,11 +140,6 @@ export async function mergeLocales(
 			locales,
 			localeDictionaries
 		);
-	}
-
-	for (const packageName of packageNames) {
-		const packageLocalDirectory = path.join(npmRoot, packageName, "locales");
-		await mergePackageLocales(packageLocalDirectory, packageName, locales, localeDictionaries);
 	}
 
 	CLIDisplay.break();
