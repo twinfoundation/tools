@@ -130,7 +130,11 @@ export async function tsToSchema(
 			}
 		}
 
-		content = content.replace(/#\/definitions\/I?/g, config.baseUrl);
+		// First replace all types that start with II to a single I with the new base url
+		content = content.replace(/#\/definitions\/II(.*)/g, `${config.baseUrl}I$1`);
+
+		// Then other types starting with capitals (optionally interfaces starting with I)
+		content = content.replace(/#\/definitions\/I?([A-Z].*)/g, `${config.baseUrl}$1`);
 
 		const filename = path.join(outputFolder, `${StringHelper.stripPrefix(type)}.json`);
 		CLIDisplay.value(
