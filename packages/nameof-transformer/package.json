@@ -25,8 +25,7 @@
 		"docs:clean": "rimraf docs/reference",
 		"docs:generate": "typedoc",
 		"docs": "npm run docs:clean && npm run docs:generate",
-		"dist": "npm run clean && npm run build && npm run test && npm run bundle && npm run docs",
-		"prepare": "ts-patch install -s"
+		"dist": "npm run clean && npm run build && npm run test && npm run bundle && npm run docs"
 	},
 	"dependencies": {
 		"typescript": "5.6.2"
