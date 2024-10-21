@@ -717,6 +717,10 @@ async function finaliseOutput(
 		delete finalSchemas.HttpStatusCode;
 	}
 
+	if (finalSchemas.Uint8Array) {
+		delete finalSchemas.Uint8Array;
+	}
+
 	const schemaKeys = Object.keys(finalSchemas);
 	schemaKeys.sort();
 
