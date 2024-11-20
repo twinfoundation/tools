@@ -8,8 +8,9 @@ on:
         required: true
         type: choice
         options:
-          - nameof
           - nameof-transformer
+          - nameof-vitest-plugin
+          - nameof
           - merge-locales
           - ts-to-openapi
           - ts-to-schema

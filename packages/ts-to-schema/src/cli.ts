@@ -27,7 +27,7 @@ export class CLI extends CLIBase {
 			{
 				title: "TWIN TypeScript To Schema",
 				appName: "ts-to-schema",
-				version: "0.0.1-next.10",
+				version: "0.0.1-next.11",
 				icon: "⚙️ ",
 				supportsEnvFiles: false,
 				overrideOutputWidth: options?.overrideOutputWidth

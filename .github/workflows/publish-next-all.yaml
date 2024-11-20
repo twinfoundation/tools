@@ -13,7 +13,15 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        package: [nameof-transformer, nameof, merge-locales, ts-to-openapi, ts-to-schema]
+        package:
+          [
+            nameof-transformer,
+            nameof-vitest-plugin,
+            nameof,
+            merge-locales,
+            ts-to-openapi,
+            ts-to-schema
+          ]
 
     steps:
       - name: Checkout
