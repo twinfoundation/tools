@@ -34,4 +34,12 @@ describe("Manual", () => {
 
 		expect(code).toEqual("");
 	});
+
+	test("can transform code with nameof properties multiple on same line", () => {
+		let code = "Urn.guard(nameof(Factory), nameof(uri), uri);";
+
+		code = manual(code);
+
+		expect(code).toEqual('Urn.guard("Factory", "uri", uri);');
+	});
 });

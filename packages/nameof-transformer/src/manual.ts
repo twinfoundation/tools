@@ -14,23 +14,11 @@ export function manual(content: string): string {
 		// Replace the nameof<IMyObject>() with "IMyObject"
 		// or the nameof<IMyObject<IType2>>() with "IMyObject"
 		const nameRegEx = /nameof<(.*?)(?:<.*>)?>\(\)/g;
-		let matchName;
-		do {
-			matchName = nameRegEx.exec(content);
-			if (matchName && matchName.length === 2) {
-				content = content.replace(matchName[0], `"${matchName[1].replace(/\?/g, "")}"`);
-			}
-		} while (matchName);
+		content = content.replace(nameRegEx, '"$1"');
 
 		// Replace the nameof(object?.prop) with "object.prop"
 		const propRegEx = /nameof\((.*?)\)/g;
-		let matchProp;
-		do {
-			matchProp = propRegEx.exec(content);
-			if (matchProp && matchProp.length === 2) {
-				content = content.replace(matchProp[0], `"${matchProp[1].replace(/\?/g, "")}"`);
-			}
-		} while (matchProp);
+		content = content.replace(propRegEx, '"$1"');
 	}
 	return content;
 }
