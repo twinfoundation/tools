@@ -14,4 +14,9 @@ export interface IPackageJson {
 	 * The dependencies for the package.
 	 */
 	dependencies?: { [id: string]: string };
+
+	/**
+	 * The peer dependencies for the package.
+	 */
+	peerDependencies?: { [id: string]: string };
 }

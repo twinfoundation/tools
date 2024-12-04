@@ -228,5 +228,15 @@ async function findDependencies(
 		}
 	}
 
+	if (Is.objectValue(packageJson?.peerDependencies)) {
+		for (const pkg in packageJson.peerDependencies) {
+			if (pkg.startsWith("@twin.org") && !packageNames.includes(pkg)) {
+				packageNames.push(pkg);
+				const packagePath = path.join(npmRoot, pkg, "package.json");
+				await findDependencies(npmRoot, packagePath, packageNames);
+			}
+		}
+	}
+
 	return packageJson ?? {};
 }

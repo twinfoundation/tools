@@ -27,7 +27,7 @@ export class CLI extends CLIBase {
 			{
 				title: "TWIN Merge Locales",
 				appName: "merge-locales",
-				version: "0.0.1-next.13",
+				version: "0.0.1-next.14",
 				icon: "⚙️ ",
 				supportsEnvFiles: false,
 				overrideOutputWidth: options?.overrideOutputWidth
