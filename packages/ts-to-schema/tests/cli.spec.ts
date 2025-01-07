@@ -46,7 +46,7 @@ describe("CLI", () => {
 
 	test("Can fail to run with 3 command line arguments and invalid config", async () => {
 		const cli = new CLI();
-		const res = await cli.run(["node", "script", "config"], undefined, {
+		const res = await cli.run(["node", "script", "config"], "./dist/locales", {
 			overrideOutputWidth: 1000
 		});
 		expect(res).toEqual(1);
@@ -87,9 +87,13 @@ describe("CLI", () => {
 
 		const configFile = path.join(TEST_CONFIG_LOCATION, "config.json");
 		await writeFile(configFile, JSON.stringify(config, undefined, "\t"));
-		const res = await cli.run(["node", "script", configFile, TEST_OUTPUT_FOLDER], undefined, {
-			overrideOutputWidth: 1000
-		});
+		const res = await cli.run(
+			["node", "script", configFile, TEST_OUTPUT_FOLDER],
+			"./dist/locales",
+			{
+				overrideOutputWidth: 1000
+			}
+		);
 		expect(res).toEqual(0);
 	});
 
@@ -106,9 +110,13 @@ describe("CLI", () => {
 
 		const configFile = path.join(TEST_CONFIG_LOCATION, "config.json");
 		await writeFile(configFile, JSON.stringify(config, undefined, "\t"));
-		const res = await cli.run(["node", "script", configFile, TEST_OUTPUT_FOLDER], undefined, {
-			overrideOutputWidth: 1000
-		});
+		const res = await cli.run(
+			["node", "script", configFile, TEST_OUTPUT_FOLDER],
+			"./dist/locales",
+			{
+				overrideOutputWidth: 1000
+			}
+		);
 		expect(res).toEqual(0);
 	});
 });

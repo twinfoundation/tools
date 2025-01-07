@@ -35,6 +35,12 @@
 		"progress": {
 			"done": "Done.",
 			"error": "Error"
+		},
+		"options": {
+			"lang": {
+				"param": "--lang '<'lang'>'",
+				"description": "The language to display the output in."
+			}
 		}
 	}
 }
