@@ -154,7 +154,7 @@ export async function mergeLocales(
 		);
 		await writeFile(
 			localeFile,
-			JSON.stringify(localeDictionaries[localeDictionary], null, 2),
+			`${JSON.stringify(localeDictionaries[localeDictionary], undefined, "\t")}\n`,
 			"utf8"
 		);
 	}

@@ -734,7 +734,7 @@ async function finaliseOutput(
 		securitySchemes
 	};
 
-	let json = JSON.stringify(openApi, undefined, "    ");
+	let json = JSON.stringify(openApi, undefined, "\t");
 
 	// Remove the reference only schemas, repeating until no more substitutions
 	let performedSubstitution;
