@@ -142,7 +142,7 @@ export async function tsToSchema(
 			filename,
 			1
 		);
-		await writeFile(filename, content);
+		await writeFile(filename, `${content}\n`);
 	}
 }
 

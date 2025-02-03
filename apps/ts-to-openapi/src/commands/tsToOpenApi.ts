@@ -782,7 +782,7 @@ async function finaliseOutput(
 	try {
 		await mkdir(path.dirname(outputFile), { recursive: true });
 	} catch {}
-	await writeFile(outputFile, json);
+	await writeFile(outputFile, `${json}\n`);
 }
 
 /**
