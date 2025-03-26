@@ -18,6 +18,7 @@
 		"**/wordlists/**"
 	],
 	"words": [
+		"abbrev",
 		"Distinguisher",
 		"httpstatuscode",
 		"nameof",
