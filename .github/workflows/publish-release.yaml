@@ -1,5 +1,9 @@
 name: Publish Release
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -88,8 +92,8 @@ jobs:
       - name: Run Dist
         run: |
           cd ${{ matrix.package }}
-          npm install
-          npm run dist
+          # npm install
+          # npm run dist
 
       # Before we publish the package to NPM we remove all the scripts and devDependencies
       # as these are not needed in the published package
@@ -104,7 +108,7 @@ jobs:
         run: |
           NPM_TAG=${{ github.event.inputs.semverType == 'prerelease' && 'next' || 'latest' }}
           cd ${{ matrix.package }}
-          npm publish --provenance --access public --tag ${NPM_TAG}
+          # npm publish --provenance --access public --tag ${NPM_TAG}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
