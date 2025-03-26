@@ -74,6 +74,6 @@ jobs:
           MANIFEST_FILE=release/release-please-manifest.${{ github.event.inputs.semverType == 'prerelease' && 'prerelease' || 'prod' }}.json
           echo "Config File: ${CONFIG_FILE}"
           echo "Manifest File: ${MANIFEST_FILE}"
-          echo "Repo: ${github.repository}"
-          echo "Target Branch: ${github.ref_name}"
+          echo "Repo: ${{ github.repository }}"
+          echo "Target Branch: ${{ github.ref_name}}"
           npx --yes release-please github-release --config-file=${CONFIG_FILE} --manifest-file=${MANIFEST_FILE} --repo-url=${{ github.repository }} --target-branch=${{ github.ref_name}} --token=${{ secrets.GITHUB_TOKEN }}
