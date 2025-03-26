@@ -13,50 +13,32 @@
 		"packages/nameof-transformer": {
 			"package-name": "nameof-transformer",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/index.ts"
-			]
+			"extra-files": ["src/index.ts"]
 		},
 		"packages/nameof-vitest-plugin": {
 			"package-name": "nameof-vitest-plugin",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/index.ts"
-			]
+			"extra-files": ["src/index.ts"]
 		},
 		"packages/nameof": {
 			"package-name": "nameof",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/index.ts"
-			]
+			"extra-files": ["src/index.ts"]
 		},
 		"apps/merge-locales": {
 			"package-name": "merge-locales",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/cli.ts",
-				"tests/cli.spec.ts",
-				"src/index.ts"
-			]
+			"extra-files": ["src/cli.ts", "tests/cli.spec.ts", "src/index.ts"]
 		},
 		"apps/ts-to-openapi": {
 			"package-name": "ts-to-openapi",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/cli.ts",
-				"tests/cli.spec.ts",
-				"src/index.ts"
-			]
+			"extra-files": ["src/cli.ts", "tests/cli.spec.ts", "src/index.ts"]
 		},
 		"apps/ts-to-schema": {
 			"package-name": "ts-to-schema",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": [
-				"src/cli.ts",
-				"tests/cli.spec.ts",
-				"src/index.ts"
-			]
+			"extra-files": ["src/cli.ts", "tests/cli.spec.ts", "src/index.ts"]
 		}
 	},
 	"plugins": [
