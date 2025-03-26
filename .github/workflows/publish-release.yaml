@@ -13,52 +13,17 @@ on:
           - 'minor' # For new features (e.g. 1.1.0)
           - 'major' # For breaking changes (e.g. 2.0.0)
 
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
 jobs:
-  # This job extracts all workspace packages from package.json
-  # and prepares them for the matrix strategy in the publish job
-  read-workspaces:
-    runs-on: ubuntu-latest
-    outputs:
-      # This output will be consumed by the publish job's matrix
-      packages: ${{ steps.read-workspaces.outputs.packages }}
-
-    # Enforce branch rules:
-    # 1. Only run prerelease versions on the next branch
-    # 2. Only run production versions (patch/minor/major) on the main branch
-    if: (github.ref == 'refs/heads/main' && github.event.inputs.semverType != 'prerelease') || (github.ref == 'refs/heads/next' && github.event.inputs.semverType == 'prerelease')
-
-    steps:
-      # Get the code from the repository
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Use the built-in token for GitHub Actions
-
-      # Extract workspace package patterns from package.json
-      # Note: This only extracts the patterns (e.g. "packages/*"), not the resolved directories
-      # The matrix will receive these patterns and each job will process one pattern
-      - name: Extract workspaces from package.json
-        id: read-workspaces
-        run: |
-          # Use Node.js to read the workspaces array from package.json
-          PACKAGES=$(node -e '
-            const pkg = JSON.parse(require("fs").readFileSync("./package.json", "utf8"));
-            console.log(JSON.stringify(pkg.workspaces));
-          ')
-          echo "Found packages: $PACKAGES"
-          # Set the output for use in the matrix strategy
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-
   # Once the packages have been published we create the releases on GitHub
   # No need to use a patched version of please-release here as the version
   # numbers were already incremented in the prepare-release action
   publish-gh-releases:
     runs-on: ubuntu-latest
-
-    permissions:
-      id-token: write
-      contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -81,4 +46,6 @@ jobs:
           echo "Manifest File: ${MANIFEST_FILE}"
           echo "Repo: ${{ github.repository }}"
           echo "Target Branch: ${{ github.ref_name}}"
-          npx --yes release-please github-release --config-file=${CONFIG_FILE} --manifest-file=${MANIFEST_FILE} --repo-url=${{ github.repository }} --target-branch=${{ github.ref_name}} --token=${{ secrets.GITHUB_TOKEN }}
+          npx --yes release-please github-release --config-file=${CONFIG_FILE} --manifest-file=${MANIFEST_FILE} --repo-url=${{ github.repository }} --target-branch=${{ github.ref_name}} --token=$GITHUB_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
