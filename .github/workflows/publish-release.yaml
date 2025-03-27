@@ -1,6 +1,8 @@
 name: Publish Release
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
 
 on:
   workflow_dispatch:
