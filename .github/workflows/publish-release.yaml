@@ -1,9 +1,9 @@
 name: Publish Release
 
-permissions:
-  actions: read
-  contents: write
-  pull-requests: write
+# GHA_RELEASE_TOKEN requires
+# contents: read/write
+# pull requests: read/write
+# workflows: read/write
 
 on:
   workflow_dispatch:
@@ -46,4 +46,4 @@ jobs:
           echo "Manifest File: ${MANIFEST_FILE}"
           echo "Repo: ${{ github.repository }}"
           echo "Target Branch: ${{ github.ref_name}}"
-          npx --yes release-please github-release --config-file=${CONFIG_FILE} --manifest-file=${MANIFEST_FILE} --repo-url=${{ github.repository }} --target-branch=${{ github.ref_name}} --token=${{ secrets.GITHUB_TOKEN }}
+          npx --yes release-please github-release --config-file=${CONFIG_FILE} --manifest-file=${MANIFEST_FILE} --repo-url=${{ github.repository }} --target-branch=${{ github.ref_name}} --token=${{ secrets.GHA_RELEASE_TOKEN }}
