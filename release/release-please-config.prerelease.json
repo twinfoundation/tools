@@ -8,7 +8,6 @@
 	"versioning": "prerelease",
 	"prerelease": true,
 	"prerelease-type": "next",
-	"separate-pull-requests": false,
 	"packages": {
 		"packages/nameof-transformer": {
 			"package-name": "nameof-transformer",
