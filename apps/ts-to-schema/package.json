@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/ts-to-schema",
-	"version": "0.0.1-next.19",
+	"version": "0.0.1-next.20",
 	"description": "Tool to convert TypeScript definitions to JSON schemas",
 	"repository": {
 		"type": "git",
@@ -33,16 +33,16 @@
 	"dependencies": {
 		"@twin.org/cli-core": "next",
 		"@twin.org/core": "next",
-		"@twin.org/nameof": "0.0.1-next.19",
+		"@twin.org/nameof": "0.0.1-next.20",
 		"commander": "13.1.0",
 		"glob": "11.0.1",
 		"jsonschema": "1.5.0",
 		"ts-json-schema-generator": "2.4.0-next.1"
 	},
 	"devDependencies": {
-		"@twin.org/merge-locales": "0.0.1-next.19",
-		"@twin.org/nameof-transformer": "0.0.1-next.19",
-		"@twin.org/nameof-vitest-plugin": "0.0.1-next.19",
+		"@twin.org/merge-locales": "0.0.1-next.20",
+		"@twin.org/nameof-transformer": "0.0.1-next.20",
+		"@twin.org/nameof-vitest-plugin": "0.0.1-next.20",
 		"@types/node": "22.13.9",
 		"@vitest/coverage-v8": "3.0.8",
 		"copyfiles": "2.4.1",
