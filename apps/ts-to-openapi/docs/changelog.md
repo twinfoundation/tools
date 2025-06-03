@@ -1,5 +1,23 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.22](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.21...ts-to-openapi-v0.0.1-next.22) (2025-06-03)
+
+
+### Features
+
+* generate schemas as individual entities ([9f372ab](https://github.com/twinfoundation/tools/commit/9f372abdfc27aba93b303c7b214991919c0c18c3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.21 to 0.0.1-next.22
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.21 to 0.0.1-next.22
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.21 to 0.0.1-next.22
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.21 to 0.0.1-next.22
+
 ## [0.0.1-next.21](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.20...ts-to-openapi-v0.0.1-next.21) (2025-04-17)
 
 
