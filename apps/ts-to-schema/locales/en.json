@@ -22,8 +22,7 @@
 			"progress": {
 				"loadingConfigJson": "Loading Config JSON",
 				"creatingWorkingDir": "Creating Working Directory",
-				"generatingSchemas": "Generating Schemas",
-				"finalisingSchemas": "Finalising Schemas",
+				"generatingSchema": "Generating Schema",
 				"writingSchemas": "Writing Schemas",
 				"writingSchema": "Writing Schema",
 				"models": "Models"

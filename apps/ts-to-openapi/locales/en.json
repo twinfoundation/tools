@@ -25,7 +25,7 @@
 				"loadingConfigJson": "Loading Config JSON",
 				"creatingWorkingDir": "Creating Working Directory",
 				"creatingSecuritySchemas": "Creating Security Schemas",
-				"generatingSchemas": "Generating Schemas",
+				"generatingSchema": "Generating Schema",
 				"finalisingSchemas": "Finalising Schemas",
 				"writingOutputFile": "Writing Output File",
 				"models": "Models",

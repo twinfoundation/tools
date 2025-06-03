@@ -11,12 +11,7 @@ export interface ITsToSchemaConfig {
 	baseUrl: string;
 
 	/**
-	 * The list of glob sources that can be used to generate the schemas.
-	 */
-	sources: string[];
-
-	/**
-	 * The list of types to generate.
+	 * The source files to generate the types from.
 	 */
 	types: string[];
 

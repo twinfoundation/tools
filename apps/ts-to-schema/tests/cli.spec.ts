@@ -56,32 +56,33 @@ describe("CLI", () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
 			baseUrl: "https://schema.twindev.org/my-namespace/",
-			sources: ["./tests/dist/**/*.d.ts"],
 			types: [
-				"IJsonLdDocument",
-				"IJsonLdNodeObject",
-				"IJsonLdContextDefinition",
-				"IJsonLdValueObject",
-				"IJsonLdNodeObject",
-				"IJsonLdKeyword",
-				"IJsonLdContainerType",
-				"IJsonLdContainerTypeArray",
-				"IJsonLdJsonObject",
-				"IJsonLdJsonValue",
-				"IJsonLdJsonPrimitive",
-				"IJsonLdJsonArray",
-				"IJsonLdIncludedBlock",
-				"IJsonLdListOrSetItem",
-				"IJsonLdExpandedTermDefinition",
-				"IJsonLdNodePrimitive",
-				"IJsonLdGraphObject",
-				"IJsonLdListObject",
-				"IJsonLdSetObject",
-				"IJsonLdLanguageMap",
-				"IJsonLdIndexMap",
-				"IJsonLdIndexMapItem",
-				"IJsonLdIdMap",
-				"IJsonLdTypeMap"
+				"./tests/dist/json-ld/IJsonLdObject.ts",
+				"./tests/dist/json-ld/IJsonLdDocument.ts",
+				"./tests/dist/json-ld/IJsonLdNodeObject.ts",
+				"./tests/dist/json-ld/IJsonLdNodePrimitive.ts",
+				"./tests/dist/json-ld/IJsonLdGraphObject.ts",
+				"./tests/dist/json-ld/IJsonLdValueObject.ts",
+				"./tests/dist/json-ld/IJsonLdListObject.ts",
+				"./tests/dist/json-ld/IJsonLdSetObject.ts",
+				"./tests/dist/json-ld/IJsonLdLanguageMap.ts",
+				"./tests/dist/json-ld/IJsonLdIndexMap.ts",
+				"./tests/dist/json-ld/IJsonLdIndexMapItem.ts",
+				"./tests/dist/json-ld/IJsonLdIdMap.ts",
+				"./tests/dist/json-ld/IJsonLdTypeMap.ts",
+				"./tests/dist/json-ld/IJsonLdIncludedBlock.ts",
+				"./tests/dist/json-ld/IJsonLdContextDefinition.ts",
+				"./tests/dist/json-ld/IJsonLdContextDefinitionRoot.ts",
+				"./tests/dist/json-ld/IJsonLdContextDefinitionElement.ts",
+				"./tests/dist/json-ld/IJsonLdExpandedTermDefinition.ts",
+				"./tests/dist/json-ld/IJsonLdKeyword.ts",
+				"./tests/dist/json-ld/IJsonLdListOrSetItem.ts",
+				"./tests/dist/json-ld/IJsonLdContainerType.ts",
+				"./tests/dist/json-ld/IJsonLdContainerTypeArray.ts",
+				"./tests/dist/json-ld/IJsonLdJsonPrimitive.ts",
+				"./tests/dist/json-ld/IJsonLdJsonArray.ts",
+				"./tests/dist/json-ld/IJsonLdJsonObject.ts",
+				"./tests/dist/json-ld/IJsonLdJsonValue.ts"
 			]
 		};
 
@@ -94,6 +95,7 @@ describe("CLI", () => {
 				overrideOutputWidth: 1000
 			}
 		);
+		console.log(errorBuffer.join("\n"));
 		expect(res).toEqual(0);
 	});
 
@@ -101,8 +103,7 @@ describe("CLI", () => {
 		const cli = new CLI();
 		const config: ITsToSchemaConfig = {
 			baseUrl: "https://schema.twindev.org/my-namespace/",
-			sources: ["./tests/dist/**/*.d.ts"],
-			types: ["IExternalElement"],
+			types: ["./tests/dist/IExternalElement.d.ts"],
 			externalReferences: {
 				IJsonLdNodeObject: "https://example.com/IJsonLdDocument"
 			}

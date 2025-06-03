@@ -110,12 +110,19 @@ export async function tsToSchema(
 		)
 	);
 
-	CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.generatingSchemas"));
-	const schemas = await generateSchemas(config.sources, config.types, workingDirectory);
-
 	CLIDisplay.break();
 	CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.writingSchemas"));
-	for (const type of config.types) {
+	for (const typeSource of config.types) {
+		CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.generatingSchema"));
+
+		const typeSourceParts = typeSource.split("/");
+		const type = StringHelper.pascalCase(
+			typeSourceParts[typeSourceParts.length - 1].replace(/(\.d)?\.ts$/, ""),
+			false
+		);
+
+		const schemas = await generateSchemas(typeSource, type, workingDirectory);
+
 		if (Is.empty(schemas[type])) {
 			throw new GeneralError("commands", "commands.ts-to-schema.schemaNotFound", { type });
 		}
@@ -155,64 +162,38 @@ export async function tsToSchema(
  * @internal
  */
 async function generateSchemas(
-	modelDirWildcards: string[],
-	types: string[],
+	typeSource: string,
+	type: string,
 	outputWorkingDir: string
 ): Promise<{
 	[id: string]: JSONSchema7;
 }> {
 	const allSchemas: { [id: string]: JSONSchema7 } = {};
 
-	const arraySingularTypes: string[] = [];
-	for (const type of types) {
-		if (type.endsWith("[]")) {
-			const singularType = type.slice(0, -2);
-			arraySingularTypes.push(singularType);
-			if (!types.includes(singularType)) {
-				types.push(singularType);
-			}
-		}
-	}
+	CLIDisplay.value(I18n.formatMessage("commands.ts-to-schema.progress.models"), typeSource, 1);
+	const generator = createGenerator({
+		path: typeSource,
+		type,
+		tsconfig: path.join(outputWorkingDir, "tsconfig.json"),
+		skipTypeCheck: true,
+		expose: "all"
+	});
 
-	for (const files of modelDirWildcards) {
-		CLIDisplay.value(
-			I18n.formatMessage("commands.ts-to-schema.progress.models"),
-			files.replace(/\\/g, "/"),
-			1
-		);
-		const generator = createGenerator({
-			path: files.replace(/\\/g, "/"),
-			type: "*",
-			tsconfig: path.join(outputWorkingDir, "tsconfig.json"),
-			skipTypeCheck: true,
-			expose: "all"
-		});
+	const schema = generator.createSchema("*");
 
-		const schema = generator.createSchema("*");
-
-		if (schema.definitions) {
-			for (const def in schema.definitions) {
-				// Remove the partial markers
-				let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
-				// Cleanup the generic markers
-				defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
-				allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
-			}
+	if (schema.definitions) {
+		for (const def in schema.definitions) {
+			// Remove the partial markers
+			let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
+			// Cleanup the generic markers
+			defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
+			allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
 		}
 	}
 
 	const referencedSchemas: { [id: string]: JSONSchema7 } = {};
 
-	extractTypes(allSchemas, types, referencedSchemas);
-
-	for (const arraySingularType of arraySingularTypes) {
-		referencedSchemas[`${arraySingularType}[]`] = {
-			type: "array",
-			items: {
-				$ref: `#/components/schemas/${arraySingularType}`
-			}
-		};
-	}
+	extractTypes(allSchemas, [type], referencedSchemas);
 
 	return referencedSchemas;
 }
