@@ -1,5 +1,23 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.23](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.22...ts-to-openapi-v0.0.1-next.23) (2025-06-03)
+
+
+### Bug Fixes
+
+* fix locale resource name ([53ad5b5](https://github.com/twinfoundation/tools/commit/53ad5b56f19a5082f16a4f1e4a761e114dce8250))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.22 to 0.0.1-next.23
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.22 to 0.0.1-next.23
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.22 to 0.0.1-next.23
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.22 to 0.0.1-next.23
+
 ## [0.0.1-next.22](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.21...ts-to-openapi-v0.0.1-next.22) (2025-06-03)
 
 
