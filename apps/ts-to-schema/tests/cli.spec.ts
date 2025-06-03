@@ -95,7 +95,6 @@ describe("CLI", () => {
 				overrideOutputWidth: 1000
 			}
 		);
-		console.log(errorBuffer.join("\n"));
 		expect(res).toEqual(0);
 	});
 
