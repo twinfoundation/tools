@@ -1,5 +1,23 @@
 # @twin.org/ts-to-schema - Changelog
 
+## [0.0.1-next.24](https://github.com/twinfoundation/tools/compare/ts-to-schema-v0.0.1-next.23...ts-to-schema-v0.0.1-next.24) (2025-06-05)
+
+
+### Miscellaneous Chores
+
+* **ts-to-schema:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.23 to 0.0.1-next.24
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.23 to 0.0.1-next.24
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.23 to 0.0.1-next.24
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.23 to 0.0.1-next.24
+
 ## [0.0.1-next.23](https://github.com/twinfoundation/tools/compare/ts-to-schema-v0.0.1-next.22...ts-to-schema-v0.0.1-next.23) (2025-06-03)
 
 

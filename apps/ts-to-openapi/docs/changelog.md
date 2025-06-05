@@ -1,5 +1,23 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.24](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.23...ts-to-openapi-v0.0.1-next.24) (2025-06-05)
+
+
+### Features
+
+* strip Omit types ([3a079f9](https://github.com/twinfoundation/tools/commit/3a079f9abe8127c5b44a2b9382babf2f19629d08))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.23 to 0.0.1-next.24
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.23 to 0.0.1-next.24
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.23 to 0.0.1-next.24
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.23 to 0.0.1-next.24
+
 ## [0.0.1-next.23](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.22...ts-to-openapi-v0.0.1-next.23) (2025-06-03)
 
 
