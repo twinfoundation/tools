@@ -763,6 +763,9 @@ async function finaliseOutput(
 	// Remove the partial markers
 	json = json.replace(/Partial%3CI(.*?)%3E/g, "$1");
 
+	// Remove the omit markers
+	json = json.replace(/Omit%3CI(.*?)%2C.*%3E/g, "$1");
+
 	// Cleanup the generic markers
 	json = json.replace(/%3Cunknown%3E/g, "");
 
@@ -970,6 +973,8 @@ async function generateSchemas(
 			for (const def in schema.definitions) {
 				// Remove the partial markers
 				let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
+				// Remove the omit markers
+				defSub = defSub.replace(/^Omit<(.*?),.*>/g, "$1");
 				// Cleanup the generic markers
 				defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
 				allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
@@ -1030,7 +1035,10 @@ function extractTypesFromSchema(
 
 	if (Is.stringValue(schema.$ref)) {
 		additionalTypes.push(
-			schema.$ref.replace("#/definitions/", "").replace(/^Partial%3C(.*?)%3E/g, "$1")
+			schema.$ref
+				.replace("#/definitions/", "")
+				.replace(/^Partial%3C(.*?)%3E/g, "$1")
+				.replace(/^Omit%3C(.*?)%2C.*%3E/g, "$1")
 		);
 	} else if (Is.object<JSONSchema7>(schema.items)) {
 		if (Is.arrayValue<JSONSchema7>(schema.items)) {
