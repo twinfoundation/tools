@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/ts-to-openapi",
-	"version": "0.0.1-next.24",
+	"version": "0.0.1-next.25",
 	"description": "Tool to convert TypeScript REST route definitions to OpenAPI Specifications",
 	"repository": {
 		"type": "git",
@@ -36,16 +36,16 @@
 		"@twin.org/api-models": "next",
 		"@twin.org/cli-core": "next",
 		"@twin.org/core": "next",
-		"@twin.org/nameof": "0.0.1-next.24",
+		"@twin.org/nameof": "0.0.1-next.25",
 		"@twin.org/web": "next",
 		"commander": "14.0.0",
 		"glob": "11.0.2",
 		"ts-json-schema-generator": "2.4.0"
 	},
 	"devDependencies": {
-		"@twin.org/merge-locales": "0.0.1-next.24",
-		"@twin.org/nameof-transformer": "0.0.1-next.24",
-		"@twin.org/nameof-vitest-plugin": "0.0.1-next.24",
+		"@twin.org/merge-locales": "0.0.1-next.25",
+		"@twin.org/nameof-transformer": "0.0.1-next.25",
+		"@twin.org/nameof-vitest-plugin": "0.0.1-next.25",
 		"@types/node": "24.0.0",
 		"@vitest/coverage-v8": "3.2.3",
 		"copyfiles": "2.4.1",
