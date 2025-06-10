@@ -1,5 +1,23 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.25](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.24...ts-to-openapi-v0.0.1-next.25) (2025-06-10)
+
+
+### Features
+
+* add ts-to-schema overrides ([3c54504](https://github.com/twinfoundation/tools/commit/3c5450468eb998204a75576b7791a7ca4027da62))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.24 to 0.0.1-next.25
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.24 to 0.0.1-next.25
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.24 to 0.0.1-next.25
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.24 to 0.0.1-next.25
+
 ## [0.0.1-next.24](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.23...ts-to-openapi-v0.0.1-next.24) (2025-06-05)
 
 

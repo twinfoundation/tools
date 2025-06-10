@@ -1,5 +1,19 @@
 # @twin.org/nameof - Changelog
 
+## [0.0.1-next.25](https://github.com/twinfoundation/tools/compare/nameof-v0.0.1-next.24...nameof-v0.0.1-next.25) (2025-06-10)
+
+
+### Features
+
+* add ts-to-schema overrides ([3c54504](https://github.com/twinfoundation/tools/commit/3c5450468eb998204a75576b7791a7ca4027da62))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.24 to 0.0.1-next.25
+
 ## [0.0.1-next.24](https://github.com/twinfoundation/tools/compare/nameof-v0.0.1-next.23...nameof-v0.0.1-next.24) (2025-06-05)
 
 
