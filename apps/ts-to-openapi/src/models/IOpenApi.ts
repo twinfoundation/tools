@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { JSONSchema7 } from "json-schema";
+import type { IJsonSchema } from "./IJsonSchema";
 import type { IOpenApiPathMethod } from "./IOpenApiPathMethod";
 import type { IOpenApiSecurityScheme } from "./IOpenApiSecurityScheme";
 
@@ -54,7 +54,7 @@ export interface IOpenApi {
 	 * The components.
 	 */
 	components?: {
-		schemas?: JSONSchema7;
+		schemas?: IJsonSchema;
 		securitySchemes?: {
 			[name: string]: IOpenApiSecurityScheme;
 		};

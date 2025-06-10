@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import type { Json } from "@hyperjump/json-pointer";
+import type { JsonSchemaType } from "@hyperjump/json-schema";
 import type {
 	ICreatedResponse,
 	IHttpRequest,
@@ -18,7 +20,6 @@ import { GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@twin.org/co
 import { nameof } from "@twin.org/nameof";
 import { HttpStatusCode, MimeTypes } from "@twin.org/web";
 import type { Command } from "commander";
-import type { JSONSchema7, JSONSchema7TypeName, JSONSchema7Type } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
 import {
 	HTTP_STATUS_CODE_MAP,
@@ -27,6 +28,7 @@ import {
 } from "./httpStatusCodeMap";
 import type { IInputPath } from "../models/IInputPath";
 import type { IInputResult } from "../models/IInputResult";
+import type { IJsonSchema } from "../models/IJsonSchema";
 import type { IOpenApi } from "../models/IOpenApi";
 import type { IOpenApiExample } from "../models/IOpenApiExample";
 import type { IOpenApiHeader } from "../models/IOpenApiHeader";
@@ -248,11 +250,11 @@ export async function tsToOpenApi(
 								if (Is.objectValue(example.response.headers)) {
 									headers ??= {};
 									const headersSchema = schemas[responseType.type].properties
-										?.headers as JSONSchema7;
+										?.headers as IJsonSchema;
 									for (const header in example.response.headers) {
 										const headerValue = example.response.headers[header];
 										const propertySchema = headersSchema.properties?.[header];
-										const schemaType = Is.object<JSONSchema7>(propertySchema)
+										const schemaType = Is.object<IJsonSchema>(propertySchema)
 											? propertySchema?.type
 											: undefined;
 										headers[header] = {
@@ -395,8 +397,8 @@ export async function tsToOpenApi(
 				required: boolean;
 				in: "path" | "query" | "header";
 				schema: {
-					type?: JSONSchema7TypeName | JSONSchema7TypeName[];
-					enum?: JSONSchema7Type[];
+					type?: JsonSchemaType | JsonSchemaType[];
+					enum?: Json[];
 					$ref?: string;
 				};
 				style?: string;
@@ -423,7 +425,7 @@ export async function tsToOpenApi(
 				}
 			}
 
-			let requestObject: JSONSchema7 | undefined = inputPath.requestType
+			let requestObject: IJsonSchema | undefined = inputPath.requestType
 				? schemas[inputPath.requestType]
 				: undefined;
 
@@ -440,10 +442,10 @@ export async function tsToOpenApi(
 				}
 
 				// If there is a path params object convert these to params
-				if (Is.object<JSONSchema7>(requestObject.properties.pathParams)) {
+				if (Is.object<IJsonSchema>(requestObject.properties.pathParams)) {
 					for (const pathParam of pathQueryHeaderParams) {
 						const prop = requestObject.properties.pathParams.properties?.[pathParam.name];
-						if (Is.object<JSONSchema7>(prop)) {
+						if (Is.object<IJsonSchema>(prop)) {
 							pathParam.description = prop.description ?? pathParam.description;
 							pathParam.schema = {
 								type: prop.type,
@@ -458,10 +460,10 @@ export async function tsToOpenApi(
 				}
 
 				// If there is a query object convert these to params as well
-				if (Is.object<JSONSchema7>(requestObject.properties.query)) {
+				if (Is.object<IJsonSchema>(requestObject.properties.query)) {
 					for (const prop in requestObject.properties.query.properties) {
 						const queryProp = requestObject.properties.query.properties[prop];
-						if (Is.object<JSONSchema7>(queryProp)) {
+						if (Is.object<IJsonSchema>(queryProp)) {
 							let example: unknown;
 							if (Is.object(requestExample.query) && requestExample.query[prop]) {
 								example = requestExample.query[prop];
@@ -486,12 +488,12 @@ export async function tsToOpenApi(
 				}
 
 				// If there are headers in the object convert these to spec params
-				if (Is.object<JSONSchema7>(requestObject.properties.headers)) {
+				if (Is.object<IJsonSchema>(requestObject.properties.headers)) {
 					const headerProperties = requestObject.properties.headers.properties;
 
 					for (const prop in headerProperties) {
 						const headerSchema = headerProperties[prop];
-						if (Is.object<JSONSchema7>(headerSchema)) {
+						if (Is.object<IJsonSchema>(headerSchema)) {
 							let example: unknown;
 							if (Is.object(requestExample.headers) && requestExample.headers[prop]) {
 								example = requestExample.headers[prop];
@@ -631,7 +633,7 @@ export async function tsToOpenApi(
  */
 async function finaliseOutput(
 	usedCommonResponseTypes: string[],
-	schemas: { [id: string]: JSONSchema7 },
+	schemas: { [id: string]: IJsonSchema },
 	openApi: IOpenApi,
 	securitySchemes: { [name: string]: IOpenApiSecurityScheme },
 	externalReferences: { [type: string]: string } | undefined,
@@ -652,7 +654,7 @@ async function finaliseOutput(
 
 	// Remove the I, < and > from names
 	const finalSchemas: {
-		[id: string]: JSONSchema7;
+		[id: string]: IJsonSchema;
 	} = {};
 	for (const schema in schemas) {
 		const props = schemas[schema].properties;
@@ -665,7 +667,7 @@ async function finaliseOutput(
 			// but only the body property, if there is no body then we don't
 			// need to add it to the schemas
 			if (schema.endsWith("Response") || schema.endsWith("Request")) {
-				if (Is.object<JSONSchema7>(props.body)) {
+				if (Is.object<IJsonSchema>(props.body)) {
 					schemas[schema] = props.body;
 				} else {
 					skipSchema = true;
@@ -724,7 +726,7 @@ async function finaliseOutput(
 	const schemaKeys = Object.keys(finalSchemas);
 	schemaKeys.sort();
 
-	const sortedSchemas: { [id: string]: JSONSchema7 } = {};
+	const sortedSchemas: { [id: string]: IJsonSchema } = {};
 	for (const key of schemaKeys) {
 		sortedSchemas[key] = finalSchemas[key];
 	}
@@ -938,9 +940,9 @@ async function generateSchemas(
 	types: string[],
 	outputWorkingDir: string
 ): Promise<{
-	[id: string]: JSONSchema7;
+	[id: string]: IJsonSchema;
 }> {
-	const allSchemas: { [id: string]: JSONSchema7 } = {};
+	const allSchemas: { [id: string]: IJsonSchema } = {};
 
 	const arraySingularTypes: string[] = [];
 	for (const type of types) {
@@ -977,12 +979,12 @@ async function generateSchemas(
 				defSub = defSub.replace(/^Omit<(.*?),.*>/g, "$1");
 				// Cleanup the generic markers
 				defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
-				allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
+				allSchemas[defSub] = schema.definitions[def] as IJsonSchema;
 			}
 		}
 	}
 
-	const referencedSchemas: { [id: string]: JSONSchema7 } = {};
+	const referencedSchemas: { [id: string]: IJsonSchema } = {};
 
 	extractTypes(allSchemas, types, referencedSchemas);
 
@@ -1006,9 +1008,9 @@ async function generateSchemas(
  * @internal
  */
 function extractTypes(
-	allSchemas: { [id: string]: JSONSchema7 },
+	allSchemas: { [id: string]: IJsonSchema },
 	requiredTypes: string[],
-	referencedSchemas: { [id: string]: JSONSchema7 }
+	referencedSchemas: { [id: string]: IJsonSchema }
 ): void {
 	for (const type of requiredTypes) {
 		if (allSchemas[type] && !referencedSchemas[type]) {
@@ -1027,9 +1029,9 @@ function extractTypes(
  * @internal
  */
 function extractTypesFromSchema(
-	allTypes: { [id: string]: JSONSchema7 },
-	schema: JSONSchema7,
-	output: { [id: string]: JSONSchema7 }
+	allTypes: { [id: string]: IJsonSchema },
+	schema: IJsonSchema,
+	output: { [id: string]: IJsonSchema }
 ): void {
 	const additionalTypes = [];
 
@@ -1040,8 +1042,8 @@ function extractTypesFromSchema(
 				.replace(/^Partial%3C(.*?)%3E/g, "$1")
 				.replace(/^Omit%3C(.*?)%2C.*%3E/g, "$1")
 		);
-	} else if (Is.object<JSONSchema7>(schema.items)) {
-		if (Is.arrayValue<JSONSchema7>(schema.items)) {
+	} else if (Is.object<IJsonSchema>(schema.items)) {
+		if (Is.arrayValue<IJsonSchema>(schema.items)) {
 			for (const itemSchema of schema.items) {
 				extractTypesFromSchema(allTypes, itemSchema, output);
 			}
@@ -1052,7 +1054,7 @@ function extractTypesFromSchema(
 		if (Is.object(schema.properties)) {
 			for (const prop in schema.properties) {
 				const p = schema.properties[prop];
-				if (Is.object<JSONSchema7>(p)) {
+				if (Is.object<IJsonSchema>(p)) {
 					extractTypesFromSchema(allTypes, p, output);
 				}
 			}
@@ -1062,13 +1064,13 @@ function extractTypesFromSchema(
 		}
 	} else if (Is.arrayValue(schema.anyOf)) {
 		for (const prop of schema.anyOf) {
-			if (Is.object<JSONSchema7>(prop)) {
+			if (Is.object<IJsonSchema>(prop)) {
 				extractTypesFromSchema(allTypes, prop, output);
 			}
 		}
 	} else if (Is.arrayValue(schema.oneOf)) {
 		for (const prop of schema.oneOf) {
-			if (Is.object<JSONSchema7>(prop)) {
+			if (Is.object<IJsonSchema>(prop)) {
 				extractTypesFromSchema(allTypes, prop, output);
 			}
 		}
@@ -1084,10 +1086,10 @@ function extractTypesFromSchema(
  * @param props The properties to tidy up.
  * @internal
  */
-function tidySchemaProperties(props: { [id: string]: JSONSchema7 | boolean }): void {
+function tidySchemaProperties(props: { [id: string]: IJsonSchema | boolean }): void {
 	for (const prop in props) {
 		const p = props[prop];
-		if (Is.object<JSONSchema7>(p)) {
+		if (Is.object<IJsonSchema>(p)) {
 			// For OpenAPI we don't include a description for
 			// items that have refs
 			if (p.$ref) {
@@ -1100,8 +1102,8 @@ function tidySchemaProperties(props: { [id: string]: JSONSchema7 | boolean }): v
 
 			if (
 				p.items &&
-				Is.object<JSONSchema7>(p.items) &&
-				Is.object<JSONSchema7>(p.items.properties)
+				Is.object<IJsonSchema>(p.items) &&
+				Is.object<IJsonSchema>(p.items.properties)
 			) {
 				tidySchemaProperties(p.items.properties);
 			}

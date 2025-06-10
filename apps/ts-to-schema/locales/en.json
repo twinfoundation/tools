@@ -23,6 +23,7 @@
 				"loadingConfigJson": "Loading Config JSON",
 				"creatingWorkingDir": "Creating Working Directory",
 				"generatingSchema": "Generating Schema",
+				"overridingSchema": "Overriding Schema",
 				"writingSchemas": "Writing Schemas",
 				"writingSchema": "Writing Schema",
 				"models": "Models"

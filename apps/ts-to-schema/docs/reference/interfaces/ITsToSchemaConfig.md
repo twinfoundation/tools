@@ -29,3 +29,15 @@ External type references
 #### Index Signature
 
 \[`id`: `string`\]: `string`
+
+***
+
+### overrides?
+
+> `optional` **overrides**: `object`
+
+Override for specific types, to be used when the type cannot be generated automatically, or is generated incorrectly.
+
+#### Index Signature
+
+\[`id`: `string`\]: `JsonSchemaDraft202012Object`

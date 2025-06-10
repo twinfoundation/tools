@@ -5,8 +5,8 @@ import path from "node:path";
 import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
 import { GeneralError, I18n, Is, StringHelper } from "@twin.org/core";
 import type { Command } from "commander";
-import type { JSONSchema7 } from "json-schema";
 import { createGenerator } from "ts-json-schema-generator";
+import type { IJsonSchema } from "../models/IJsonSchema";
 import type { ITsToSchemaConfig } from "../models/ITsToSchemaConfig";
 
 /**
@@ -113,35 +113,41 @@ export async function tsToSchema(
 	CLIDisplay.break();
 	CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.writingSchemas"));
 	for (const typeSource of config.types) {
-		CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.generatingSchema"));
-
 		const typeSourceParts = typeSource.split("/");
 		const type = StringHelper.pascalCase(
 			typeSourceParts[typeSourceParts.length - 1].replace(/(\.d)?\.ts$/, ""),
 			false
 		);
 
-		const schemas = await generateSchemas(typeSource, type, workingDirectory);
+		let content;
+		if (Is.object<IJsonSchema>(config.overrides?.[type])) {
+			CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.overridingSchema"));
+			content = JSON.stringify(config.overrides?.[type], undefined, "\t");
+		} else {
+			CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.generatingSchema"));
 
-		if (Is.empty(schemas[type])) {
-			throw new GeneralError("commands", "commands.ts-to-schema.schemaNotFound", { type });
-		}
-		let content = JSON.stringify(schemas[type], undefined, "\t");
+			const schemas = await generateSchemas(typeSource, type, workingDirectory);
 
-		if (Is.objectValue(config.externalReferences)) {
-			for (const external in config.externalReferences) {
-				content = content.replace(
-					new RegExp(`#/definitions/${external}`, "g"),
-					config.externalReferences[external]
-				);
+			if (Is.empty(schemas[type])) {
+				throw new GeneralError("commands", "commands.ts-to-schema.schemaNotFound", { type });
 			}
+			content = JSON.stringify(schemas[type], undefined, "\t");
+
+			if (Is.objectValue(config.externalReferences)) {
+				for (const external in config.externalReferences) {
+					content = content.replace(
+						new RegExp(`#/definitions/${external}`, "g"),
+						config.externalReferences[external]
+					);
+				}
+			}
+
+			// First replace all types that start with II to a single I with the new base url
+			content = content.replace(/#\/definitions\/II(.*)/g, `${config.baseUrl}I$1`);
+
+			// Then other types starting with capitals (optionally interfaces starting with I)
+			content = content.replace(/#\/definitions\/I?([A-Z].*)/g, `${config.baseUrl}$1`);
 		}
-
-		// First replace all types that start with II to a single I with the new base url
-		content = content.replace(/#\/definitions\/II(.*)/g, `${config.baseUrl}I$1`);
-
-		// Then other types starting with capitals (optionally interfaces starting with I)
-		content = content.replace(/#\/definitions\/I?([A-Z].*)/g, `${config.baseUrl}$1`);
 
 		const filename = path.join(outputFolder, `${StringHelper.stripPrefix(type)}.json`);
 		CLIDisplay.value(
@@ -166,9 +172,9 @@ async function generateSchemas(
 	type: string,
 	outputWorkingDir: string
 ): Promise<{
-	[id: string]: JSONSchema7;
+	[id: string]: IJsonSchema;
 }> {
-	const allSchemas: { [id: string]: JSONSchema7 } = {};
+	const allSchemas: { [id: string]: IJsonSchema } = {};
 
 	CLIDisplay.value(I18n.formatMessage("commands.ts-to-schema.progress.models"), typeSource, 1);
 	const generator = createGenerator({
@@ -187,11 +193,11 @@ async function generateSchemas(
 			let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
 			// Cleanup the generic markers
 			defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
-			allSchemas[defSub] = schema.definitions[def] as JSONSchema7;
+			allSchemas[defSub] = schema.definitions[def] as IJsonSchema;
 		}
 	}
 
-	const referencedSchemas: { [id: string]: JSONSchema7 } = {};
+	const referencedSchemas: { [id: string]: IJsonSchema } = {};
 
 	extractTypes(allSchemas, [type], referencedSchemas);
 
@@ -206,9 +212,9 @@ async function generateSchemas(
  * @internal
  */
 function extractTypes(
-	allSchemas: { [id: string]: JSONSchema7 },
+	allSchemas: { [id: string]: IJsonSchema },
 	requiredTypes: string[],
-	referencedSchemas: { [id: string]: JSONSchema7 }
+	referencedSchemas: { [id: string]: IJsonSchema }
 ): void {
 	for (const type of requiredTypes) {
 		if (allSchemas[type] && !referencedSchemas[type]) {
@@ -227,9 +233,9 @@ function extractTypes(
  * @internal
  */
 function extractTypesFromSchema(
-	allTypes: { [id: string]: JSONSchema7 },
-	schema: JSONSchema7,
-	output: { [id: string]: JSONSchema7 }
+	allTypes: { [id: string]: IJsonSchema },
+	schema: IJsonSchema,
+	output: { [id: string]: IJsonSchema }
 ): void {
 	const additionalTypes = [];
 
@@ -237,8 +243,8 @@ function extractTypesFromSchema(
 		additionalTypes.push(
 			schema.$ref.replace("#/definitions/", "").replace(/^Partial%3C(.*?)%3E/g, "$1")
 		);
-	} else if (Is.object<JSONSchema7>(schema.items)) {
-		if (Is.arrayValue<JSONSchema7>(schema.items)) {
+	} else if (Is.object<IJsonSchema>(schema.items)) {
+		if (Is.arrayValue<IJsonSchema>(schema.items)) {
 			for (const itemSchema of schema.items) {
 				extractTypesFromSchema(allTypes, itemSchema, output);
 			}
@@ -249,7 +255,7 @@ function extractTypesFromSchema(
 		if (Is.object(schema.properties)) {
 			for (const prop in schema.properties) {
 				const p = schema.properties[prop];
-				if (Is.object<JSONSchema7>(p)) {
+				if (Is.object<IJsonSchema>(p)) {
 					extractTypesFromSchema(allTypes, p, output);
 				}
 			}
@@ -259,13 +265,13 @@ function extractTypesFromSchema(
 		}
 	} else if (Is.arrayValue(schema.anyOf)) {
 		for (const prop of schema.anyOf) {
-			if (Is.object<JSONSchema7>(prop)) {
+			if (Is.object<IJsonSchema>(prop)) {
 				extractTypesFromSchema(allTypes, prop, output);
 			}
 		}
 	} else if (Is.arrayValue(schema.oneOf)) {
 		for (const prop of schema.oneOf) {
-			if (Is.object<JSONSchema7>(prop)) {
+			if (Is.object<IJsonSchema>(prop)) {
 				extractTypesFromSchema(allTypes, prop, output);
 			}
 		}
