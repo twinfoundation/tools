@@ -1,5 +1,12 @@
 # @twin.org/nameof-transformer - Changelog
 
+## [0.0.1-next.26](https://github.com/twinfoundation/tools/compare/nameof-transformer-v0.0.1-next.25...nameof-transformer-v0.0.1-next.26) (2025-06-11)
+
+
+### Features
+
+* use most recent JSON schema specs ([4598cbf](https://github.com/twinfoundation/tools/commit/4598cbf29f7b82dba4a9f3b19f81dfe66f5a6060))
+
 ## [0.0.1-next.25](https://github.com/twinfoundation/tools/compare/nameof-transformer-v0.0.1-next.24...nameof-transformer-v0.0.1-next.25) (2025-06-10)
 
 
