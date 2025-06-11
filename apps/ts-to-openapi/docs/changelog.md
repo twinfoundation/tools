@@ -1,5 +1,23 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.26](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.25...ts-to-openapi-v0.0.1-next.26) (2025-06-11)
+
+
+### Features
+
+* use most recent JSON schema specs ([4598cbf](https://github.com/twinfoundation/tools/commit/4598cbf29f7b82dba4a9f3b19f81dfe66f5a6060))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.25 to 0.0.1-next.26
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.25 to 0.0.1-next.26
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.25 to 0.0.1-next.26
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.25 to 0.0.1-next.26
+
 ## [0.0.1-next.25](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.24...ts-to-openapi-v0.0.1-next.25) (2025-06-10)
 
 

@@ -1,5 +1,22 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.26](https://github.com/twinfoundation/tools/compare/merge-locales-v0.0.1-next.25...merge-locales-v0.0.1-next.26) (2025-06-11)
+
+
+### Miscellaneous Chores
+
+* **merge-locales:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.25 to 0.0.1-next.26
+  * devDependencies
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.25 to 0.0.1-next.26
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.25 to 0.0.1-next.26
+
 ## [0.0.1-next.25](https://github.com/twinfoundation/tools/compare/merge-locales-v0.0.1-next.24...merge-locales-v0.0.1-next.25) (2025-06-10)
 
 
