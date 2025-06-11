@@ -40,4 +40,4 @@ Override for specific types, to be used when the type cannot be generated automa
 
 #### Index Signature
 
-\[`id`: `string`\]: `JsonSchemaDraft202012Object`
+\[`id`: `string`\]: `AnySchemaObject`

@@ -3,11 +3,13 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
-import { GeneralError, I18n, Is, StringHelper } from "@twin.org/core";
+import { ArrayHelper, GeneralError, I18n, Is, StringHelper } from "@twin.org/core";
 import type { Command } from "commander";
 import { createGenerator } from "ts-json-schema-generator";
 import type { IJsonSchema } from "../models/IJsonSchema";
 import type { ITsToSchemaConfig } from "../models/ITsToSchemaConfig";
+
+const SCHEMA_VERSION = "https://json-schema.org/draft/2020-12/schema";
 
 /**
  * Build the root command to be consumed by the CLI.
@@ -119,35 +121,38 @@ export async function tsToSchema(
 			false
 		);
 
-		let content;
+		let schemaObject;
 		if (Is.object<IJsonSchema>(config.overrides?.[type])) {
 			CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.overridingSchema"));
-			content = JSON.stringify(config.overrides?.[type], undefined, "\t");
+			schemaObject = config.overrides?.[type];
 		} else {
 			CLIDisplay.task(I18n.formatMessage("commands.ts-to-schema.progress.generatingSchema"));
 
 			const schemas = await generateSchemas(typeSource, type, workingDirectory);
-
 			if (Is.empty(schemas[type])) {
 				throw new GeneralError("commands", "commands.ts-to-schema.schemaNotFound", { type });
 			}
-			content = JSON.stringify(schemas[type], undefined, "\t");
-
-			if (Is.objectValue(config.externalReferences)) {
-				for (const external in config.externalReferences) {
-					content = content.replace(
-						new RegExp(`#/definitions/${external}`, "g"),
-						config.externalReferences[external]
-					);
-				}
-			}
-
-			// First replace all types that start with II to a single I with the new base url
-			content = content.replace(/#\/definitions\/II(.*)/g, `${config.baseUrl}I$1`);
-
-			// Then other types starting with capitals (optionally interfaces starting with I)
-			content = content.replace(/#\/definitions\/I?([A-Z].*)/g, `${config.baseUrl}$1`);
+			schemaObject = schemas[type];
 		}
+
+		schemaObject = finaliseSchema(schemaObject, config.baseUrl, type);
+
+		let content = JSON.stringify(schemaObject, undefined, "\t");
+
+		if (Is.objectValue(config.externalReferences)) {
+			for (const external in config.externalReferences) {
+				content = content.replace(
+					new RegExp(`#/definitions/${external}`, "g"),
+					config.externalReferences[external]
+				);
+			}
+		}
+
+		// First replace all types that start with II to a single I with the new base url
+		content = content.replace(/#\/definitions\/II(.*)/g, `${config.baseUrl}I$1`);
+
+		// Then other types starting with capitals (optionally interfaces starting with I)
+		content = content.replace(/#\/definitions\/I?([A-Z].*)/g, `${config.baseUrl}$1`);
 
 		const filename = path.join(outputFolder, `${StringHelper.stripPrefix(type)}.json`);
 		CLIDisplay.value(
@@ -279,5 +284,80 @@ function extractTypesFromSchema(
 
 	if (additionalTypes.length > 0) {
 		extractTypes(allTypes, additionalTypes, output);
+	}
+}
+
+/**
+ * Process the schema object to ensure it has the correct properties.
+ * @param schemaObject The schema object to process.
+ * @param baseUrl The base URL for the schema references.
+ * @param type The type of the schema object.
+ * @returns The finalised schema object.
+ */
+function finaliseSchema(schemaObject: IJsonSchema, baseUrl: string, type: string): IJsonSchema {
+	processArrays(schemaObject);
+	const { description, ...rest } = schemaObject;
+	return {
+		$schema: SCHEMA_VERSION,
+		$id: `${baseUrl}${StringHelper.stripPrefix(type)}`,
+		description,
+		...rest
+	};
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaObject The schema object to process.
+ */
+function processArrays(schemaObject?: IJsonSchema): void {
+	if (Is.object<IJsonSchema>(schemaObject)) {
+		// latest specs have singular items in `items` property
+		// and multiple items in prefixItems, so update the schema accordingly
+		// https://www.learnjsonschema.com/2020-12/applicator/items/
+		// https://www.learnjsonschema.com/2020-12/applicator/prefixitems/
+		const schemaItems = schemaObject.items;
+		if (Is.array<IJsonSchema>(schemaItems) || Is.object<IJsonSchema>(schemaItems)) {
+			schemaObject.prefixItems = ArrayHelper.fromObjectOrArray<IJsonSchema>(schemaItems);
+			schemaObject.items = false;
+		}
+		const additionalItems = schemaObject.additionalItems;
+		if (Is.array<IJsonSchema>(additionalItems) || Is.object<IJsonSchema>(additionalItems)) {
+			schemaObject.items = ArrayHelper.fromObjectOrArray<IJsonSchema>(additionalItems)[0];
+			delete schemaObject.additionalItems;
+		}
+
+		processSchemaDictionary(schemaObject.properties);
+		processArrays(schemaObject.additionalProperties);
+		processSchemaArray(schemaObject.allOf);
+		processSchemaArray(schemaObject.anyOf);
+		processSchemaArray(schemaObject.oneOf);
+	}
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaDictionary The schema object to process.
+ */
+function processSchemaDictionary(schemaDictionary?: { [key: string]: IJsonSchema }): void {
+	if (Is.object(schemaDictionary)) {
+		for (const item of Object.values(schemaDictionary)) {
+			if (Is.object<IJsonSchema>(item)) {
+				processArrays(item);
+			}
+		}
+	}
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaArray The schema object to process.
+ */
+function processSchemaArray(schemaArray?: IJsonSchema[]): void {
+	if (Is.arrayValue(schemaArray)) {
+		for (const item of schemaArray) {
+			if (Is.object<IJsonSchema>(item)) {
+				processArrays(item);
+			}
+		}
 	}
 }

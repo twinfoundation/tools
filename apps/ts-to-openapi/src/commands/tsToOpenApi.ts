@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { Json } from "@hyperjump/json-pointer";
-import type { JsonSchemaType } from "@hyperjump/json-schema";
 import type {
 	ICreatedResponse,
 	IHttpRequest,
@@ -37,6 +35,7 @@ import type { IOpenApiSecurityScheme } from "../models/IOpenApiSecurityScheme";
 import type { IPackageJson } from "../models/IPackageJson";
 import type { ITsToOpenApiConfig } from "../models/ITsToOpenApiConfig";
 import type { ITsToOpenApiConfigEntryPoint } from "../models/ITsToOpenApiConfigEntryPoint";
+import type { JsonTypeName } from "../models/jsonTypeName";
 
 /**
  * Build the root command to be consumed by the CLI.
@@ -397,8 +396,8 @@ export async function tsToOpenApi(
 				required: boolean;
 				in: "path" | "query" | "header";
 				schema: {
-					type?: JsonSchemaType | JsonSchemaType[];
-					enum?: Json[];
+					type?: JsonTypeName | JsonTypeName[];
+					enum?: IJsonSchema[];
 					$ref?: string;
 				};
 				style?: string;
@@ -660,7 +659,7 @@ async function finaliseOutput(
 		const props = schemas[schema].properties;
 		let skipSchema = false;
 
-		if (Is.object(props)) {
+		if (Is.object<{ [id: string]: IJsonSchema | boolean }>(props)) {
 			tidySchemaProperties(props);
 
 			// Any request/response objects should be added to the final schemas
