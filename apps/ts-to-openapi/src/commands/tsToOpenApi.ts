@@ -14,7 +14,7 @@ import type {
 	IUnauthorizedResponse
 } from "@twin.org/api-models";
 import { CLIDisplay, CLIUtils } from "@twin.org/cli-core";
-import { GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@twin.org/core";
+import { ArrayHelper, GeneralError, I18n, Is, ObjectHelper, StringHelper } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
 import { HttpStatusCode, MimeTypes } from "@twin.org/web";
 import type { Command } from "commander";
@@ -714,12 +714,14 @@ async function finaliseOutput(
 		}
 	}
 
-	if (finalSchemas.HttpStatusCode) {
-		delete finalSchemas.HttpStatusCode;
+	// Remove standard types that we don't want in the final output
+	const removeTypes = ["HttpStatusCode", "Uint8Array", "ArrayBuffer"];
+	for (const type of removeTypes) {
+		delete finalSchemas[type];
 	}
 
-	if (finalSchemas.Uint8Array) {
-		delete finalSchemas.Uint8Array;
+	for (const type in finalSchemas) {
+		processArrays(finalSchemas[type]);
 	}
 
 	const schemaKeys = Object.keys(finalSchemas);
@@ -1282,4 +1284,61 @@ async function loadPackages(
 	}
 
 	return restRoutes;
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaObject The schema object to process.
+ */
+function processArrays(schemaObject?: IJsonSchema): void {
+	if (Is.object<IJsonSchema>(schemaObject)) {
+		// latest specs have singular items in `items` property
+		// and multiple items in prefixItems, so update the schema accordingly
+		// https://www.learnjsonschema.com/2020-12/applicator/items/
+		// https://www.learnjsonschema.com/2020-12/applicator/prefixitems/
+		const schemaItems = schemaObject.items;
+		if (Is.array<IJsonSchema>(schemaItems) || Is.object<IJsonSchema>(schemaItems)) {
+			schemaObject.prefixItems = ArrayHelper.fromObjectOrArray<IJsonSchema>(schemaItems);
+			delete schemaObject.items;
+		}
+		const additionalItems = schemaObject.additionalItems;
+		if (Is.array<IJsonSchema>(additionalItems) || Is.object<IJsonSchema>(additionalItems)) {
+			schemaObject.items = ArrayHelper.fromObjectOrArray<IJsonSchema>(additionalItems)[0];
+			delete schemaObject.additionalItems;
+		}
+
+		processSchemaDictionary(schemaObject.properties);
+		processArrays(schemaObject.additionalProperties);
+		processSchemaArray(schemaObject.allOf);
+		processSchemaArray(schemaObject.anyOf);
+		processSchemaArray(schemaObject.oneOf);
+	}
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaDictionary The schema object to process.
+ */
+function processSchemaDictionary(schemaDictionary?: { [key: string]: IJsonSchema }): void {
+	if (Is.object(schemaDictionary)) {
+		for (const item of Object.values(schemaDictionary)) {
+			if (Is.object<IJsonSchema>(item)) {
+				processArrays(item);
+			}
+		}
+	}
+}
+
+/**
+ * Process arrays in the schema object.
+ * @param schemaArray The schema object to process.
+ */
+function processSchemaArray(schemaArray?: IJsonSchema[]): void {
+	if (Is.arrayValue(schemaArray)) {
+		for (const item of schemaArray) {
+			if (Is.object<IJsonSchema>(item)) {
+				processArrays(item);
+			}
+		}
+	}
 }
