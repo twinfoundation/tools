@@ -194,10 +194,7 @@ async function generateSchemas(
 
 	if (schema.definitions) {
 		for (const def in schema.definitions) {
-			// Remove the partial markers
-			let defSub = def.replace(/^Partial<(.*?)>/g, "$1");
-			// Cleanup the generic markers
-			defSub = defSub.replace(/</g, "%3C").replace(/>/g, "%3E");
+			const defSub = normaliseTypeName(def);
 			allSchemas[defSub] = schema.definitions[def] as IJsonSchema;
 		}
 	}
@@ -360,4 +357,29 @@ function processSchemaArray(schemaArray?: IJsonSchema[]): void {
 			}
 		}
 	}
+}
+
+/**
+ * Cleanup TypeScript markers from the type name.
+ * @param typeName The definition string to clean up.
+ * @returns The cleaned up definition string.
+ */
+function normaliseTypeName(typeName: string): string {
+	// Remove the partial markers
+	let sTypeName = typeName.replace(/^Partial<(.*?)>/g, "$1");
+	sTypeName = sTypeName.replace(/Partial%3CI(.*?)%3E/g, "$1");
+
+	// Remove the omit markers
+	sTypeName = sTypeName.replace(/^Omit<(.*?),.*>/g, "$1");
+	sTypeName = sTypeName.replace(/Omit%3CI(.*?)%2C.*%3E/g, "$1");
+
+	// Remove the pick markers
+	sTypeName = sTypeName.replace(/^Pick<(.*?),.*>/g, "$1");
+	sTypeName = sTypeName.replace(/Pick%3CI(.*?)%2C.*%3E/g, "$1");
+
+	// Cleanup the generic markers
+	sTypeName = sTypeName.replace(/</g, "%3C").replace(/>/g, "%3E");
+	sTypeName = sTypeName.replace(/%3Cunknown%3E/g, "");
+
+	return sTypeName;
 }
