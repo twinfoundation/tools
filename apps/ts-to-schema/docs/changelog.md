@@ -1,5 +1,23 @@
 # @twin.org/ts-to-schema - Changelog
 
+## [0.0.1-next.28](https://github.com/twinfoundation/tools/compare/ts-to-schema-v0.0.1-next.27...ts-to-schema-v0.0.1-next.28) (2025-06-18)
+
+
+### Features
+
+* improve schema type name normalisation ([1a18b26](https://github.com/twinfoundation/tools/commit/1a18b267d87e9179bda01b396b256c450ae2889e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/nameof bumped from 0.0.1-next.27 to 0.0.1-next.28
+  * devDependencies
+    * @twin.org/merge-locales bumped from 0.0.1-next.27 to 0.0.1-next.28
+    * @twin.org/nameof-transformer bumped from 0.0.1-next.27 to 0.0.1-next.28
+    * @twin.org/nameof-vitest-plugin bumped from 0.0.1-next.27 to 0.0.1-next.28
+
 ## [0.0.1-next.27](https://github.com/twinfoundation/tools/compare/ts-to-schema-v0.0.1-next.26...ts-to-schema-v0.0.1-next.27) (2025-06-17)
 
 
