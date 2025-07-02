@@ -1,5 +1,12 @@
 # @twin.org/ts-to-openapi - Changelog
 
+## [0.0.1-next.29](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.28...ts-to-openapi-v0.0.1-next.29) (2025-07-02)
+
+
+### Features
+
+* move package to framework repo ([4490bda](https://github.com/twinfoundation/tools/commit/4490bda472d4dc8ddfe931e2fce81f3411de9ab3))
+
 ## [0.0.1-next.28](https://github.com/twinfoundation/tools/compare/ts-to-openapi-v0.0.1-next.27...ts-to-openapi-v0.0.1-next.28) (2025-06-18)
 
 
