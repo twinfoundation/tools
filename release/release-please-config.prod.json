@@ -11,12 +11,20 @@
 		"apps/ts-to-openapi": {
 			"package-name": "ts-to-openapi",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": ["src/cli.ts", "tests/cli.spec.ts", "src/index.ts"]
+			"extra-files": [
+				"src/cli.ts",
+				"tests/cli.spec.ts",
+				"src/index.ts"
+			]
 		},
 		"apps/ts-to-schema": {
 			"package-name": "ts-to-schema",
 			"changelog-path": "docs/changelog.md",
-			"extra-files": ["src/cli.ts", "tests/cli.spec.ts", "src/index.ts"]
+			"extra-files": [
+				"src/cli.ts",
+				"tests/cli.spec.ts",
+				"src/index.ts"
+			]
 		}
 	},
 	"plugins": [
@@ -24,7 +32,10 @@
 		{
 			"type": "linked-versions",
 			"groupName": "repo",
-			"components": ["ts-to-openapi", "ts-to-schema"]
+			"components": [
+				"ts-to-openapi",
+				"ts-to-schema"
+			]
 		}
 	]
 }
