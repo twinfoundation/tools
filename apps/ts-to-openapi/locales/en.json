@@ -1,0 +1,45 @@
+{
+	"error": {
+		"commands": {
+			"ts-to-openapi": {
+				"configFailed": "Configuration failed to load.",
+				"missingRestRoutesEntryPoints": "Missing REST routes method \"{method}\" in package \"{package}\".",
+				"missingRestRoutesEntryPoint": "Missing REST routes entryPoint \"{entryPoint}\" in package \"{package}\".",
+				"unsupportedProperties": "Unsupported properties found in the request object \"{keys}\"."
+			}
+		}
+	},
+	"commands": {
+		"ts-to-openapi": {
+			"options": {
+				"config": {
+					"param": "'<'config'>'",
+					"description": "Path to the JSON configuration file."
+				},
+				"output-file": {
+					"param": "'<'output-file'>'",
+					"description": "The JSON file to write the OpenAPI spec."
+				}
+			},
+			"progress": {
+				"loadingConfigJson": "Loading Config JSON",
+				"creatingWorkingDir": "Creating Working Directory",
+				"creatingSecuritySchemas": "Creating Security Schemas",
+				"generatingSchemas": "Generating Schemas",
+				"finalisingSchemas": "Finalising Schemas",
+				"writingOutputFile": "Writing Output File",
+				"models": "Models",
+				"installingNpmPackages": "Installing NPM Packages",
+				"processingPackage": "Processing Package",
+				"importingModule": "Importing Module",
+				"processingRoutes": "Processing Routes"
+			},
+			"labels": {
+				"configJson": "Config JSON",
+				"outputFile": "Output File",
+				"outputWorkingDir": "Output Working Directory",
+				"route": "Route"
+			}
+		}
+	}
+}
