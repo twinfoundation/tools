@@ -1,5 +1,12 @@
 # @twin.org/ts-to-schema - Changelog
 
+## 0.0.1 (2025-07-03)
+
+
+### Features
+
+* release to production ([ad24b7e](https://github.com/twinfoundation/tools/commit/ad24b7eb16784165b6c93b5c48788199f0e17526))
+
 ## [0.0.1-next.29](https://github.com/twinfoundation/tools/compare/ts-to-schema-v0.0.1-next.28...ts-to-schema-v0.0.1-next.29) (2025-07-02)
 
 
